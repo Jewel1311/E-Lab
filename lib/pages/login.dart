@@ -72,6 +72,7 @@ class _LoginState extends State<Login> {
       }catch(e){
         setState(() {
             credentialError = true;
+            isLoading = false;
         });
       }
   }
@@ -118,6 +119,7 @@ class _LoginState extends State<Login> {
 
           SizedBox(
             width: double.infinity,
+            height: 50,
             child: ElevatedButton(
               onPressed: (){
                 onLogin();

@@ -53,11 +53,12 @@ class _SplashScreenState extends State<SplashScreen> {
            Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Icon(Icons.biotech_rounded ,size: 60) ,
+              Icon(Icons.biotech_rounded ,size: 60, color:ElabColors.secondaryColor) ,
               Text('E-Lab',
               style: TextStyle(
                 fontSize: 50,
                 fontWeight: FontWeight.bold,
+                color: ElabColors.secondaryColor
               ),
               ),
             ],

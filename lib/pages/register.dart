@@ -29,7 +29,6 @@ class _RegisterState extends State<Register> {
   final TextEditingController nameController = TextEditingController();
   final TextEditingController phoneController = TextEditingController();
   final TextEditingController cityController = TextEditingController();
-  final TextEditingController districtController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
 
 
@@ -39,14 +38,13 @@ class _RegisterState extends State<Register> {
     nameController.dispose();
     phoneController.dispose();
     cityController.dispose();
-    districtController.dispose();
     passwordController.dispose();
     super.dispose();
   }
 
   // check input validations
   void onCreate() {
-    if ([emailController.text, nameController.text, phoneController.text, cityController.text, districtController.text, passwordController.text].any((text) => text.isEmpty)) { 
+    if ([emailController.text, nameController.text, phoneController.text, cityController.text, passwordController.text].any((text) => text.isEmpty)) { 
 
         Fluttertoast.showToast(
           msg: "All Fields are required",
@@ -102,11 +100,10 @@ class _RegisterState extends State<Register> {
       'name': nameController.text,
       'phone': phoneController.text,
       'city': cityController.text,
-      'district': districtController.text
       };
 
       await supabase
-      .from('profile') 
+      .from('profil') 
       .upsert([profileData]);
 
       // ignore: use_build_context_synchronously
@@ -118,6 +115,10 @@ class _RegisterState extends State<Register> {
         final supabaseadmin = SupabaseClient(dotenv.env['URL']!, dotenv.env['SERVICE_KEY']!);
         await supabaseadmin.auth.signOut(); // Sign out the user
         await supabaseadmin.auth.admin.deleteUser(uid);
+
+        setState(() {
+          isLoading = false;
+        });
         
         Fluttertoast.showToast(
           msg: "Unable to create account",
@@ -168,21 +169,20 @@ class _RegisterState extends State<Register> {
           ),
           const SizedBox(height: 20),
           emailField(),
-          const SizedBox(height: 10),
+          const SizedBox(height: 15),
           _buildTextField('Name',nameController),
-          const SizedBox(height: 10),
+          const SizedBox(height: 15),
           phoneField(),
-          const SizedBox(height: 10),
+          const SizedBox(height: 15),
           _buildTextField('City',cityController),
-          const SizedBox(height: 10),
-          _buildTextField('District',districtController),
-          const SizedBox(height: 10),
+          const SizedBox(height: 15),
           passwordField(),
           const SizedBox(height: 20),
           
 
           SizedBox(
             width: double.infinity,
+            height: 50,
             child: ElevatedButton(
               onPressed: (){
                 onCreate();
