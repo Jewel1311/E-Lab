@@ -4,16 +4,10 @@ import 'package:elab/pages/login.dart';
 import 'package:elab/pages/register.dart';
 import 'package:elab/splashscreen.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
+// import 'package:flutter_dotenv/flutter_dotenv.dart';
+// import 'package:supabase_flutter/supabase_flutter.dart';
 
-Future main() async {
-  WidgetsFlutterBinding.ensureInitialized();
-  await dotenv.load(fileName: ".env");
-  await Supabase.initialize(
-    url: dotenv.env['URL']!,
-    anonKey: dotenv.env['PUBLIC_KEY']!,
-  );
+Future main() async { 
   runApp(const Elab());
 }
 

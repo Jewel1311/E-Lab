@@ -1,6 +1,7 @@
 import 'package:elab/style/colors.dart';
 import 'package:email_validator/email_validator.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
@@ -15,6 +16,7 @@ class _LoginState extends State<Login> {
 
   bool emailValidationError = false;
   bool credentialError = false;
+  bool isLoading = false;
 
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
@@ -56,6 +58,9 @@ class _LoginState extends State<Login> {
   }
 
   Future loginUser() async {
+    setState(() {
+      isLoading = true;
+    });
       final supabase = Supabase.instance.client;
       try{
         await supabase.auth.signInWithPassword(
@@ -63,7 +68,7 @@ class _LoginState extends State<Login> {
           password: passwordController.text,
         );
         // ignore: use_build_context_synchronously
-        Navigator.pushNamed(context, '/dashboard');
+        Navigator.pushNamedAndRemoveUntil(context, '/dashboard', (route) => false);
       }catch(e){
         setState(() {
             credentialError = true;
@@ -74,35 +79,46 @@ class _LoginState extends State<Login> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
+      appBar: isLoading? null :
+      AppBar(
         title: const Text('E-Lab'),
         backgroundColor: ElabColors.primaryColor,
       ),
-      body: SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.all(10.0),
-        child: Column(
-          children: [
-            const SizedBox(height: 10),
-            const Text('Log in to E-Lab',
-            style: TextStyle(
-              fontSize: 18,
-              fontWeight: FontWeight.bold
-            )
-            ),
-            const SizedBox(height: 20),
-            if (credentialError)
-                const Text(
-                'Invalid Credentials',
-                style: TextStyle(color: Colors.red, fontSize: 18),   
-              ),
-            const SizedBox(height: 20),
-            emailField(),
-            const SizedBox(height: 15),
-            passwordField(),
-            const SizedBox(height: 20),
+      body: isLoading? loadingView() : loginView(context),
+    );
+  }
 
-            ElevatedButton(
+  //loading view
+  Center loadingView() => const Center(child: SpinKitThreeBounce(color: ElabColors.primaryColor,));
+
+  //login 
+  SingleChildScrollView loginView(BuildContext context) {
+    return SingleChildScrollView(
+      child: Padding(
+        padding: const EdgeInsets.all(10.0),
+      child: Column(
+        children: [
+          const SizedBox(height: 20),
+          const Icon(Icons.person, size: 60, color: ElabColors.primaryColor,),
+          const SizedBox(height: 10),
+          const Text('Log in to your E-lab account',
+          style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)
+          ),
+          const SizedBox(height: 20),
+          if (credentialError)
+              const Text(
+              'Invalid Credentials',
+              style: TextStyle(color: Colors.red, fontSize: 18),   
+            ),
+          const SizedBox(height: 20),
+          emailField(),
+          const SizedBox(height: 15),
+          passwordField(),
+          const SizedBox(height: 20),
+
+          SizedBox(
+            width: double.infinity,
+            child: ElevatedButton(
               onPressed: (){
                 onLogin();
               }, 
@@ -115,11 +131,29 @@ class _LoginState extends State<Login> {
                 fontSize: 18
               )
               )
-              )
-          ],
-        ),
-      )
+              ),
+          ),
+            const SizedBox(height: 20),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                const Text("Don't have an account?",
+                style: TextStyle(
+                  fontSize: 16
+                ),),
+                GestureDetector(
+                  onTap:() {
+                    Navigator.pushNamed(context, '/register');
+                  },
+                  child: const Text(' Sign Up', style: 
+                  TextStyle(color:ElabColors.primaryColor, fontSize: 16),)
+                ),
+              ],
+            )
+
+        ],
       ),
+    )
     );
   }
 
@@ -129,7 +163,7 @@ class _LoginState extends State<Login> {
           children: [
             const Text('Email',
             style: TextStyle(
-              fontSize: 15,
+              fontSize: 16,
               color: Colors.black
             ),
             ),
@@ -160,12 +194,13 @@ class _LoginState extends State<Login> {
             children: [
               const Text('Password',
               style: TextStyle(
-                fontSize: 15,
+                fontSize: 16,
                 color: Colors.black
               ),
               ),
               TextField(
                   controller: passwordController,
+                  obscureText: true,
                   decoration: InputDecoration(
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(5)

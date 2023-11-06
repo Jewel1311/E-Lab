@@ -7,60 +7,53 @@ class Home extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
       body: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [ 
+          Image.asset('assets/images/home.jpg'),
+
           const Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Icon(Icons.biotech_rounded ,size: 60) ,
+              Icon(Icons.biotech_rounded ,size: 60, color: ElabColors.secondaryColor,) ,
               Text('E-Lab',
               style: TextStyle(
                 fontSize: 50,
                 fontWeight: FontWeight.bold,
+                color: ElabColors.secondaryColor
               ),
               ),
             ],
           ),
-          const SizedBox(height: 20),
-          Center(
-            child: SizedBox( 
-                width: 180,
-                height: 50,
-                child: ElevatedButton(
-                onPressed: (){
-                   Navigator.pushNamed(context, '/register');
-                }, 
-                style: const ButtonStyle(
-                  backgroundColor: MaterialStatePropertyAll(ElabColors.primaryColor),
+          const SizedBox(height: 30),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+                GestureDetector(
+                  onTap: () {
+                    Navigator.pushNamed(context, '/register');
+                  },
+                  child: const Text('Register',
+                  style: TextStyle(
+                    fontSize: 22,
+                    fontWeight: FontWeight.bold
+                  )
+                  ),
                 ),
-                child:const Text('Register', 
-                style: TextStyle(
-                  fontSize: 18
-                )
-                )
+              const Text(' / ', style: TextStyle( fontSize: 30, fontWeight: FontWeight.bold)),
+              GestureDetector(
+                  onTap: () {
+                    Navigator.pushNamed(context, '/login');
+                  },
+                  child: const Text('Log In',
+                  style: TextStyle(
+                    fontSize: 22,
+                    fontWeight: FontWeight.bold
+                  )
+                  ),
                 ),
-            )
-          ),
-        const SizedBox(height:15),
-         Center(
-            child: SizedBox( 
-                width: 180,
-                height: 50,
-                child: ElevatedButton(
-                onPressed: (){
-                   Navigator.pushNamed(context, '/login');
-                }, 
-                style: const ButtonStyle(
-                  backgroundColor: MaterialStatePropertyAll(ElabColors.secondaryColor),
-                ),
-                child:const Text('Log In', 
-                style: TextStyle(
-                  fontSize: 18
-                )
-                )
-                ),
-            )
+            ],
           ),
         ],
       ),

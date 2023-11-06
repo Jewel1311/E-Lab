@@ -2,6 +2,7 @@ import 'package:elab/style/colors.dart';
 import 'package:email_validator/email_validator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
@@ -21,6 +22,7 @@ class _RegisterState extends State<Register> {
 
   bool emailValidationError = false;
   bool passwordValidationError = false;
+  bool isLoading = false;
 
 
   final TextEditingController emailController = TextEditingController();
@@ -79,6 +81,9 @@ class _RegisterState extends State<Register> {
   }
 
   Future registerUser() async{
+    setState(() {
+        isLoading = true;
+    });
     final supabase = Supabase.instance.client;
     try{
       final AuthResponse res = await supabase.auth.signUp(
@@ -105,7 +110,7 @@ class _RegisterState extends State<Register> {
       .upsert([profileData]);
 
       // ignore: use_build_context_synchronously
-      Navigator.pushNamed(context, '/dashboard');
+      Navigator.pushNamedAndRemoveUntil(context, '/dashboard', (route) => false);
 
     }catch(e){
       if (supabase.auth.currentUser != null){
@@ -134,38 +139,51 @@ class _RegisterState extends State<Register> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
+      appBar: isLoading? null :
+      AppBar(
         title: const Text('E-Lab'),
         backgroundColor: ElabColors.primaryColor,
       ),
-      body: SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.all(10.0),
-        child: Column(
-          children: [
-            const SizedBox(height: 10),
-            const Text('Create an account',
-            style: TextStyle(
-              fontSize: 18,
-              fontWeight: FontWeight.bold
-            )
-            ),
-            const SizedBox(height: 20),
-            emailField(),
-            const SizedBox(height: 10),
-            _buildTextField('Name',nameController),
-            const SizedBox(height: 10),
-            phoneField(),
-            const SizedBox(height: 10),
-            _buildTextField('City',cityController),
-            const SizedBox(height: 10),
-            _buildTextField('District',districtController),
-            const SizedBox(height: 10),
-            passwordField(),
-            const SizedBox(height: 20),
-            
+      body: isLoading? loadingView():registrationForm(context),
+    );
+  }
 
-            ElevatedButton(
+  //loading view
+  Center loadingView() => const Center(child: SpinKitThreeBounce(color: ElabColors.primaryColor,));
+
+
+  //registration form
+  SingleChildScrollView registrationForm(BuildContext context) {
+    return SingleChildScrollView(
+      child: Padding(
+        padding: const EdgeInsets.all(10.0),
+      child: Column(
+        children: [
+          const SizedBox(height: 10),
+          const Text('Create an account',
+          style: TextStyle(
+            fontSize: 18,
+            fontWeight: FontWeight.bold
+          )
+          ),
+          const SizedBox(height: 20),
+          emailField(),
+          const SizedBox(height: 10),
+          _buildTextField('Name',nameController),
+          const SizedBox(height: 10),
+          phoneField(),
+          const SizedBox(height: 10),
+          _buildTextField('City',cityController),
+          const SizedBox(height: 10),
+          _buildTextField('District',districtController),
+          const SizedBox(height: 10),
+          passwordField(),
+          const SizedBox(height: 20),
+          
+
+          SizedBox(
+            width: double.infinity,
+            child: ElevatedButton(
               onPressed: (){
                 onCreate();
               }, 
@@ -178,11 +196,28 @@ class _RegisterState extends State<Register> {
                 fontSize: 18
               )
               )
-              )
-          ],
-        ),
-      )
+              ),
+          ),
+             const SizedBox(height: 20),
+              Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                const Text('Already have an account?',
+                style: TextStyle(
+                  fontSize: 16
+                ),),
+                GestureDetector(
+                  onTap:() {
+                    Navigator.pushNamed(context, '/login');
+                  },
+                  child: const Text(' Log In', style: 
+                  TextStyle(color:ElabColors.primaryColor, fontSize: 16),)
+                ),
+              ],
+            )
+        ],
       ),
+    )
     );
   }
 
@@ -192,7 +227,7 @@ class _RegisterState extends State<Register> {
           children: [
             const Text('Email',
             style: TextStyle(
-              fontSize: 15,
+              fontSize: 16,
               color: Colors.black
             ),
             ),
@@ -222,7 +257,7 @@ class _RegisterState extends State<Register> {
           children: [
             const Text('Phone Number',
             style: TextStyle(
-              fontSize: 15,
+              fontSize: 16,
               color: Colors.black
             ),
             ),
@@ -250,12 +285,13 @@ class _RegisterState extends State<Register> {
             children: [
               const Text('Password (minimum 6 characters)',
               style: TextStyle(
-                fontSize: 15,
+                fontSize: 16,
                 color: Colors.black
               ),
               ),
               TextField(
                   controller: passwordController,
+                  obscureText: true,
                   decoration: InputDecoration(
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(5)
@@ -268,8 +304,7 @@ class _RegisterState extends State<Register> {
                   const Text(
                   'Minimum 6 characters required',
                   style: TextStyle(color: Colors.red),   
-                )
-            
+                ),         
               ],
             );
     }
@@ -282,7 +317,7 @@ class _RegisterState extends State<Register> {
       children: [
         Text(label,
         style: const TextStyle(
-          fontSize: 15,
+          fontSize: 16,
           color: Colors.black
         ),
         ),

@@ -20,7 +20,7 @@ class _DashboardState extends State<Dashboard> {
           onPressed: () async{      
             await supabase.auth.signOut();
             // ignore: use_build_context_synchronously
-            Navigator.pushNamed(context, '/home');
+            Navigator.pushNamedAndRemoveUntil(context, '/home', (route) => false);
           },
           child: const Text('Sign out'),
         ),

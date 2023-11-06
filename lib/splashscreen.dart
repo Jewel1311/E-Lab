@@ -1,5 +1,5 @@
-import 'dart:async';
-
+import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:elab/style/colors.dart';
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -22,16 +22,25 @@ class _SplashScreenState extends State<SplashScreen> {
   }
 
   Future _navigateToCorrectScreen() async {
-    await Future.delayed(const Duration(seconds: 2));
+    WidgetsFlutterBinding.ensureInitialized();
+    await dotenv.load(fileName: ".env");
+    await Supabase.initialize(
+    url: dotenv.env['URL']!,
+    anonKey: dotenv.env['PUBLIC_KEY']!,
+    );
+
+    await Future.delayed(const Duration(seconds:2));
 
     final supabase = Supabase.instance.client;
 
     if (supabase.auth.currentUser != null) {
       // ignore: use_build_context_synchronously
-      Navigator.pushReplacementNamed(context, '/dashboard');
+      Navigator.pushNamedAndRemoveUntil(context, '/dashboard', (route) => false);
+
     } else {
       // ignore: use_build_context_synchronously
-      Navigator.pushReplacementNamed(context, '/home');
+      Navigator.pushNamedAndRemoveUntil(context, '/home', (route) => false);
+
     }
   }
 
@@ -41,7 +50,7 @@ class _SplashScreenState extends State<SplashScreen> {
       body:Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [ 
-          Row(
+           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Icon(Icons.biotech_rounded ,size: 60) ,
@@ -54,7 +63,7 @@ class _SplashScreenState extends State<SplashScreen> {
             ],
           ),
           SizedBox(height: 10),
-          CircularProgressIndicator.adaptive( backgroundColor: ElabColors.secondaryColor,)
+          SpinKitFadingCube(color: ElabColors.primaryColor,)
         ]
        )
     );
