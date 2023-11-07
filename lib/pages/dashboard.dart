@@ -17,13 +17,6 @@ class _DashboardState extends State<Dashboard> {
 
   int _selectedIndex = 0;
 
-  final List<Widget> _pages = const [
-    Labs(),
-    Center(child: Text('Bookings')),
-    Center(child: Text('Results')),
-    Profile(),
-  ];
-
   void _onItemTapped( int index) {
     setState(() {
     _selectedIndex = index;
@@ -33,12 +26,21 @@ class _DashboardState extends State<Dashboard> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
       appBar: AppBar(
         backgroundColor: ElabColors.primaryColor,
         title: const Text('Welcome to E-lab'),
       ),
 
-      body: _pages[_selectedIndex],
+      body:  IndexedStack(
+        index: _selectedIndex,
+        children:const [
+          Labs(),
+          Center(child: Text('Bookings')),
+          Center(child: Text('Results')),
+          Profile(),
+        ],
+        ),
       bottomNavigationBar: BottomNavigationBar(
         type: BottomNavigationBarType.fixed,
         items: const [

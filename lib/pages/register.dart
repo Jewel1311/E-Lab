@@ -103,7 +103,7 @@ class _RegisterState extends State<Register> {
       };
 
       await supabase
-      .from('profil') 
+      .from('profile') 
       .upsert([profileData]);
 
       // ignore: use_build_context_synchronously

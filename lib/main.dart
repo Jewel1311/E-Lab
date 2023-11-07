@@ -4,8 +4,7 @@ import 'package:elab/pages/login.dart';
 import 'package:elab/pages/register.dart';
 import 'package:elab/splashscreen.dart';
 import 'package:flutter/material.dart';
-// import 'package:flutter_dotenv/flutter_dotenv.dart';
-// import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 Future main() async { 
   runApp(const Elab());
@@ -18,6 +17,9 @@ class Elab extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      theme: ThemeData(
+        fontFamily: GoogleFonts.roboto().fontFamily,
+      ),
       title: 'Elab',
       initialRoute: '/',
       routes: {
@@ -25,8 +27,7 @@ class Elab extends StatelessWidget {
         '/home' :(context) => const Home(),
         '/register' :(context) => const Register(),
         '/login' :(context) => const Login(),
-        '/dashboard':(context) => const Dashboard()
-
+        '/dashboard':(context) => const Dashboard(),
       },
     );
   }
