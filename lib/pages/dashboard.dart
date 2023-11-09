@@ -2,6 +2,7 @@ import 'package:elab/pages/labs.dart';
 import 'package:elab/pages/profile.dart';
 import 'package:elab/style/colors.dart';
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 class Dashboard extends StatefulWidget {
@@ -28,8 +29,11 @@ class _DashboardState extends State<Dashboard> {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
-        backgroundColor: ElabColors.primaryColor,
-        title: const Text('Welcome to E-lab'),
+        elevation: 0,
+        backgroundColor: Colors.white,
+        title: Text('Welcome to E-lab',
+          style: TextStyle(fontFamily: GoogleFonts.hammersmithOne().fontFamily,color: Colors.black, fontWeight: FontWeight.bold, fontSize: 22),
+        ),
       ),
 
       body:  IndexedStack(

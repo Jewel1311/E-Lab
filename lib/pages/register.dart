@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 
@@ -140,10 +141,14 @@ class _RegisterState extends State<Register> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
       appBar: isLoading? null :
       AppBar(
-        title: const Text('E-Lab'),
-        backgroundColor: ElabColors.primaryColor,
+        elevation: 0,
+         iconTheme: const IconThemeData(
+          color: ElabColors.greyColor,
+        ),
+        backgroundColor: Colors.white,
       ),
       body: isLoading? loadingView():registrationForm(context),
     );
@@ -157,27 +162,32 @@ class _RegisterState extends State<Register> {
   SingleChildScrollView registrationForm(BuildContext context) {
     return SingleChildScrollView(
       child: Padding(
-        padding: const EdgeInsets.all(10.0),
+        padding: const EdgeInsets.all(20.0),
       child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const SizedBox(height: 10),
-          const Text('Create an account',
+        Text('Create an account',
           style: TextStyle(
-            fontSize: 18,
-            fontWeight: FontWeight.bold
+            fontSize: 20,
+            fontWeight: FontWeight.bold,
+            fontFamily: GoogleFonts.hammersmithOne().fontFamily
           )
+          ),
+          const SizedBox(height: 5),
+          Text('Just one step to get started',
+          style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold, color: const Color.fromARGB(255, 146, 146, 146), fontFamily: GoogleFonts.poppins().fontFamily)
           ),
           const SizedBox(height: 20),
           emailField(),
           const SizedBox(height: 15),
-          _buildTextField('Name',nameController),
+          nameField(),
           const SizedBox(height: 15),
           phoneField(),
           const SizedBox(height: 15),
-          _buildTextField('City',cityController),
+          cityField(),
           const SizedBox(height: 15),
           passwordField(),
-          const SizedBox(height: 20),
+          const SizedBox(height: 30),
           
 
           SizedBox(
@@ -187,31 +197,38 @@ class _RegisterState extends State<Register> {
               onPressed: (){
                 onCreate();
               }, 
-              style: const ButtonStyle(
-                backgroundColor: MaterialStatePropertyAll(ElabColors.primaryColor),
-                padding: MaterialStatePropertyAll(EdgeInsets.fromLTRB(30, 10, 30, 10)),
+              style: ButtonStyle(
+                backgroundColor: const MaterialStatePropertyAll(ElabColors.primaryColor),
+                padding: const MaterialStatePropertyAll(EdgeInsets.fromLTRB(30, 10, 30, 10)),
+                shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                          RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10),
+                    ),
+                  ),
               ),
-              child:const Text('Create', 
+              child:Text('Create', 
               style: TextStyle(
-                fontSize: 18
+                fontSize: 16,
+                fontFamily: GoogleFonts.poppins().fontFamily
               )
               )
               ),
           ),
-             const SizedBox(height: 20),
+             const SizedBox(height: 30),
               Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                const Text('Already have an account?',
+                Text('Already have an account?',
                 style: TextStyle(
-                  fontSize: 16
+                  fontSize: 16,
+                  fontFamily: GoogleFonts.poppins().fontFamily
                 ),),
                 GestureDetector(
                   onTap:() {
                     Navigator.pushNamed(context, '/login');
                   },
-                  child: const Text(' Log In', style: 
-                  TextStyle(color:ElabColors.primaryColor, fontSize: 16),)
+                  child: Text(' Log In', style: 
+                  TextStyle(color:ElabColors.primaryColor, fontSize: 16,fontFamily: GoogleFonts.poppins().fontFamily),)
                 ),
               ],
             )
@@ -225,42 +242,47 @@ class _RegisterState extends State<Register> {
     return Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Text('Email',
-            style: TextStyle(
-              fontSize: 16,
-              color: Colors.black
-            ),
-            ),
+            Text('Email', style:TextStyle(fontWeight: FontWeight.bold, color: ElabColors.greyColor, fontSize: 15, fontFamily:GoogleFonts.poppins().fontFamily),),
             TextField(
                 controller: emailController,
-                decoration: InputDecoration(
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(5)
-                  )
-                ),
-                
+                style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+                decoration: const InputDecoration(
+                  prefixIcon:Icon(Icons.alternate_email_rounded, color:Colors.black,size: 20, ),
+                ),     
               ),
               // show email validation error
                if (emailValidationError)
-                const Text(
+                Text(
                 'Enter a valid email',
-                style: TextStyle(color: Colors.red),   
+                style: TextStyle(color: Colors.red, fontFamily: GoogleFonts.poppins().fontFamily),   
               )
           
             ],
           );
   }
 
+
+  Column nameField() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text('Name', style:TextStyle(fontWeight: FontWeight.bold, color: ElabColors.greyColor, fontSize: 15, fontFamily:GoogleFonts.poppins().fontFamily),),
+        TextField(
+          controller: nameController,
+          style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+          decoration: const InputDecoration(
+            prefixIcon:Icon(Icons.person, color:Colors.black,size: 20, ),
+          ),     
+        ),
+      ],
+    );
+  }
+
   Column phoneField() {
     return Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Text('Phone Number',
-            style: TextStyle(
-              fontSize: 16,
-              color: Colors.black
-            ),
-            ),
+            Text('Phone Number', style:TextStyle(fontWeight: FontWeight.bold, color: ElabColors.greyColor, fontSize: 15, fontFamily:GoogleFonts.poppins().fontFamily),),
             TextField(
                 controller: phoneController,
                 keyboardType: TextInputType.number,
@@ -268,70 +290,60 @@ class _RegisterState extends State<Register> {
                 LengthLimitingTextInputFormatter(10),
                 FilteringTextInputFormatter.digitsOnly, // Allow only digits
                 ],
-                decoration: InputDecoration(
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(5)
-                  )
-                ),
+                style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+                decoration: const InputDecoration(
+                  prefixIcon:Icon(Icons.phone, color:Colors.black,size: 20, ),
+                ),     
               ),
             ],
           );
   }
 
+  Column cityField() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text('City', style:TextStyle(fontWeight: FontWeight.bold, color: ElabColors.greyColor, fontSize: 15, fontFamily:GoogleFonts.poppins().fontFamily),),
+        TextField(
+          controller: cityController,
+          style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+          decoration: const InputDecoration(
+            prefixIcon:Icon(Icons.business, color:Colors.black,size: 20, ),
+          ),     
+        ),
+      ],
+    );
+  }
 
-  Column passwordField() {
+
+
+Column passwordField() {
       return Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const Text('Password (minimum 6 characters)',
-              style: TextStyle(
-                fontSize: 16,
-                color: Colors.black
-              ),
-              ),
+              Text('Password (minimum 6 characters)', style:TextStyle(fontWeight: FontWeight.bold, color: ElabColors.greyColor, fontSize: 15, fontFamily:GoogleFonts.poppins().fontFamily),),
               TextField(
-                  controller: passwordController,
-                  obscureText: true,
-                  decoration: InputDecoration(
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(5)
-                    )
-                  ),
-                  
-                ),
+                controller: passwordController,
+                obscureText: true,
+                style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+                decoration: const InputDecoration(
+                  prefixIcon:Icon(Icons.key, color:Colors.black,size: 20, ),
+                ),     
+              ),
                 // show email validation error
                 if (passwordValidationError)
-                  const Text(
+                  Text(
                   'Minimum 6 characters required',
-                  style: TextStyle(color: Colors.red),   
+                  style: TextStyle(color: Colors.red, fontFamily: GoogleFonts.poppins().fontFamily),   
                 ),         
               ],
             );
     }
 
 
-  // for name city district and password
-  Widget _buildTextField(String label, TextEditingController customController ){
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(label,
-        style: const TextStyle(
-          fontSize: 16,
-          color: Colors.black
-        ),
-        ),
-        TextField(
-            controller: customController,
-            decoration: InputDecoration(
-              border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(5)
-              )
-            ),
-          ),   
-      ],
-    );
-  }
+
+
+ 
 
 }
 

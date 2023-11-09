@@ -1,6 +1,7 @@
 import 'package:elab/style/colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 class Profile extends StatefulWidget {
@@ -53,16 +54,17 @@ class _ProfileState extends State<Profile> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Row(
+       Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
              Text("Account Details",
               style: TextStyle(
                 fontSize: 20,
-                fontWeight: FontWeight.bold
+                fontWeight: FontWeight.bold,
+                fontFamily: GoogleFonts.poppins().fontFamily
               ),
              ),
-             SizedBox(height: 50,)
+             const SizedBox(height: 50,)
           ],
         ),
         const SizedBox(height: 15,),
@@ -80,11 +82,14 @@ class _ProfileState extends State<Profile> {
         Padding(
           padding: const EdgeInsets.fromLTRB(0,30,0,0),
           child: ElevatedButton(
-            style: const ButtonStyle(
-              backgroundColor: MaterialStatePropertyAll(
+            style: ButtonStyle(
+              shape: MaterialStatePropertyAll(
+                RoundedRectangleBorder(borderRadius: BorderRadius.circular(10))),
+              backgroundColor: const MaterialStatePropertyAll(
                 ElabColors.color3,
               ),
-              elevation: MaterialStatePropertyAll(3),
+              elevation: const MaterialStatePropertyAll(3),
+              
             ),
             onPressed: () async {      
             await Supabase.instance.client.auth.signOut();
@@ -98,12 +103,12 @@ class _ProfileState extends State<Profile> {
               children: [
                 Text('Log Out ',
                 style: TextStyle(
-                  color: Color.fromARGB(255, 204, 101, 93,),
+                  color: Colors.black,
                   fontSize: 16,
                   fontWeight: FontWeight.bold
                 ),
                 ),
-                Icon(Icons.logout, color:Color.fromARGB(255, 204, 101, 93,),)
+                Icon(Icons.logout, color:Colors.black,)
               ],
             ),
           )),
@@ -126,17 +131,3 @@ class _ProfileState extends State<Profile> {
 }
 
 
-
-
-
-
-// Center(
-//         child: ElevatedButton(
-//           onPressed: () async{      
-//             await Supabase.instance.client.auth.signOut();
-//             // ignore: use_build_context_synchronously
-//             Navigator.pushNamedAndRemoveUntil(context, '/home', (route) => false);
-//           },
-//           child: const Text('Sign out'),
-//         ),
-//       ); 

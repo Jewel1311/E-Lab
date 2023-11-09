@@ -29,8 +29,6 @@ class _SplashScreenState extends State<SplashScreen> {
     anonKey: dotenv.env['PUBLIC_KEY']!,
     );
 
-    await Future.delayed(const Duration(seconds:2));
-
     final supabase = Supabase.instance.client;
 
     if (supabase.auth.currentUser != null) {

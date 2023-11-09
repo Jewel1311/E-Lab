@@ -1,5 +1,6 @@
 import 'package:elab/style/colors.dart';
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class Home extends StatelessWidget {
   const Home({super.key});
@@ -13,15 +14,16 @@ class Home extends StatelessWidget {
         children: [ 
           Image.asset('assets/images/home.jpg'),
 
-          const Row(
+          Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Icon(Icons.biotech_rounded ,size: 60, color: ElabColors.secondaryColor,) ,
+              const Icon(Icons.biotech_rounded ,size: 60, color: ElabColors.secondaryColor,) ,
               Text('E-Lab',
               style: TextStyle(
-                fontSize: 50,
+                fontSize: 40,
                 fontWeight: FontWeight.bold,
-                color: ElabColors.secondaryColor
+                color: ElabColors.secondaryColor,
+                fontFamily: GoogleFonts.poppins().fontFamily
               ),
               ),
             ],
@@ -30,29 +32,45 @@ class Home extends StatelessWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-                GestureDetector(
-                  onTap: () {
-                    Navigator.pushNamed(context, '/register');
-                  },
-                  child: const Text('Register',
-                  style: TextStyle(
-                    fontSize: 22,
-                    fontWeight: FontWeight.bold
-                  )
-                  ),
+              SizedBox(
+                width: 100,
+                child: ElevatedButton( onPressed: () {
+                   Navigator.pushNamed(context, '/register');
+                } ,
+                style:const ButtonStyle(
+                  backgroundColor:  MaterialStatePropertyAll(ElabColors.greyColor2),
+                  
+                ) ,
+                  child:Text('Register',
+                    style: TextStyle(
+                      fontSize: 15,
+                      color: Colors.black,
+                      fontWeight: FontWeight.bold,
+                      fontFamily: GoogleFonts.poppins().fontFamily
+                    )
+                    ),
                 ),
-              const Text(' / ', style: TextStyle( fontSize: 30, fontWeight: FontWeight.bold)),
-              GestureDetector(
-                  onTap: () {
-                    Navigator.pushNamed(context, '/login');
-                  },
-                  child: const Text('Log In',
-                  style: TextStyle(
-                    fontSize: 22,
-                    fontWeight: FontWeight.bold
-                  )
-                  ),
+              ),
+              const SizedBox(width: 20,),
+              SizedBox(
+                width: 100,
+                child: ElevatedButton( onPressed: () {
+                   Navigator.pushNamed(context, '/login');
+                } ,
+                style:const ButtonStyle(
+                  backgroundColor:  MaterialStatePropertyAll(ElabColors.greyColor2),
+                  
+                ) ,
+                  child:Text('Log In',
+                    style: TextStyle(
+                      fontSize: 15,
+                      color: Colors.black,
+                      fontWeight: FontWeight.bold,
+                      fontFamily: GoogleFonts.poppins().fontFamily
+                    )
+                    ),
                 ),
+              ),
             ],
           ),
         ],

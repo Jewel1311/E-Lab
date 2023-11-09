@@ -1,6 +1,7 @@
 import 'package:elab/style/colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:intl/intl.dart';
 
@@ -65,7 +66,7 @@ class _LabsState extends State<Labs> {
   Widget build(BuildContext context) {
 
     return Container(
-      color: ElabColors.color3,
+      color: Colors.white,
       child: Padding(
         padding: const EdgeInsets.all(0.0),
         child: isLoading? const SpinKitFadingCircle(color: ElabColors.primaryColor,) :
@@ -92,40 +93,51 @@ class _LabsState extends State<Labs> {
           itemCount: labs.length,
           itemBuilder: (context, index){
             return Container(
-              margin: const EdgeInsets.fromLTRB(10,8,10,8),
-              decoration: BoxDecoration(
+              margin: const EdgeInsets.fromLTRB(10,8,10,5),
+              decoration: const BoxDecoration(
                   color: Colors.white,
-                  borderRadius: BorderRadius.circular(10), // Set the background color of the Container
-                  boxShadow: const [
-                    BoxShadow(
-                      color: Color.fromARGB(255, 189, 189, 189),
-                      offset: Offset(0, 3),
-                      blurRadius: 5,
-                      spreadRadius: 1,
-                    ),
-                  ],
+                  border: Border(
+                    top: BorderSide(
+                      color: ElabColors.color3,
+                      width: 1.0
+                    )
+                  )
                 ),
                 child: ListTile(
-                  contentPadding: const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
-                  title: Row(
+                  contentPadding: const EdgeInsets.symmetric(vertical: 10, horizontal: 5),
+                  title: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      const Icon(Icons.biotech_rounded, color: ElabColors.primaryColor, size: 30,),
-                      Text(labs[index]['labname'], 
-                      style: const TextStyle(fontWeight: FontWeight.bold,fontSize: 16),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                          const Icon(Icons.biotech_rounded, color: ElabColors.secondaryColor, size: 30,),
+                          Text(labs[index]['labname'], 
+                          style: const TextStyle(fontWeight: FontWeight.bold,fontSize: 18),
+                          ),
+                        ],
                       ),
-                    ],
-                  ),
-                  subtitle: Padding(
-                    padding: const EdgeInsets.fromLTRB(0,15,0,0),
-                    child: Text(labs[index]['city']+ ' | '+ convert24HourTo12Hour(labs[index]['opentime']) + ' - '+  convert24HourTo12Hour(labs[index]['closetime']),
+                   const SizedBox(height: 10,),
+                   Text(labs[index]['city']+ ' | '+ convert24HourTo12Hour(labs[index]['opentime']) + ' - '+  convert24HourTo12Hour(labs[index]['closetime']),
                     style: const TextStyle(color: Colors.black),
                     ),
+                    ],
                   ),
-                  trailing: GestureDetector(
-                    onTap: () {},
-                    child: const Icon(Icons.arrow_forward_ios_sharp, size: 25, 
-                    color: ElabColors.primaryColor),
-                  ),
+                  trailing: Container(
+                    decoration: const BoxDecoration(
+                      color: ElabColors.greyColor2,
+                      shape: BoxShape.rectangle, 
+                      borderRadius: BorderRadius.all(Radius.circular(10))
+                    ),
+                    child: Padding(
+                      padding: const EdgeInsets.all(5.0),
+                      child: GestureDetector(
+                        onTap: () {},
+                        child: const Icon(Icons.keyboard_arrow_right_outlined, size: 25, color: Colors.black),
+                      ),
+                    ),
+                  )
+
                 ),
             );
           }
@@ -133,18 +145,17 @@ class _LabsState extends State<Labs> {
     );
   }
 
-
   Column searchBox() {
     return Column(
       children: [
         Padding(
-          padding: const EdgeInsets.fromLTRB(10, 10, 10, 10),
+          padding: const EdgeInsets.fromLTRB(15, 10, 15, 10),
           child: TextField(
 
                 controller: searchController,
                 decoration: InputDecoration(
                   filled: true,
-                  fillColor: Colors.white,
+                  fillColor: ElabColors.greyColor2,
                   hintText: 'Search city...',
                   suffixIcon: GestureDetector(
                     onTap: () {
@@ -156,24 +167,26 @@ class _LabsState extends State<Labs> {
                   ),
                   border: const OutlineInputBorder(
                     borderRadius: BorderRadius.all(
-                      Radius.circular(50)
+                      Radius.circular(10)
                     ),
+                    borderSide: BorderSide.none
                   ),
                 ),
                 style: const TextStyle(fontWeight: FontWeight.w700),
               ),
         ),
-        const Padding(
-          padding: EdgeInsets.fromLTRB(15, 15, 0, 10),
+        Padding(
+          padding: const EdgeInsets.fromLTRB(15, 15, 0, 10),
           child: Row(
             children: [
               Text("Labs near you", style: 
               TextStyle(
                 fontSize: 20,
                 fontWeight: FontWeight.bold,
+                fontFamily: GoogleFonts.poppins().fontFamily
               ),
               ),
-              Icon(Icons.location_on_outlined, size: 25,color: ElabColors.primaryColor,)
+              const Icon(Icons.location_on_outlined, size: 25,color: ElabColors.primaryColor,)
             ],
           ),
         )

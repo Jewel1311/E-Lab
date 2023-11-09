@@ -21,6 +21,7 @@ class Elab extends StatelessWidget {
         fontFamily: GoogleFonts.roboto().fontFamily,
       ),
       title: 'Elab',
+      
       initialRoute: '/',
       routes: {
         '/' :(context) => const SplashScreen(),
