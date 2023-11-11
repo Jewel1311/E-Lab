@@ -35,11 +35,11 @@ class _LabsState extends State<Labs> {
 
 
   String convert24HourTo12Hour(String time24Hour) {
-  final inputFormat = DateFormat('HH:mm:ss');
-  final outputFormat = DateFormat('h:mm a');
-  final dateTime = inputFormat.parse(time24Hour);
-  final time12Hour = outputFormat.format(dateTime);
-  return time12Hour;
+    final inputFormat = DateFormat('HH:mm:ss');
+    final outputFormat = DateFormat('h:mm a');
+    final dateTime = inputFormat.parse(time24Hour);
+    final time12Hour = outputFormat.format(dateTime);
+    return time12Hour;
 }
 
   Future getLabs() async{

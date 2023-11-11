@@ -19,7 +19,7 @@ class Home extends StatelessWidget {
             children: [
               const Icon(Icons.biotech_rounded ,size: 60, color: ElabColors.secondaryColor,) ,
               Text('E-Lab',
-              style: TextStyle(
+                style: TextStyle(
                 fontSize: 40,
                 fontWeight: FontWeight.bold,
                 color: ElabColors.secondaryColor,

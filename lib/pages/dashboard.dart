@@ -53,7 +53,7 @@ class _DashboardState extends State<Dashboard> {
             label: 'Home',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.access_time),
+            icon: Icon(Icons.calendar_month_outlined),
             label: 'Bookings',
           ),
           BottomNavigationBarItem(
@@ -66,6 +66,7 @@ class _DashboardState extends State<Dashboard> {
           ),
         ],
         currentIndex: _selectedIndex,
+        backgroundColor: ElabColors.greyColor2,
         onTap: _onItemTapped,
         iconSize: 25,
         showUnselectedLabels: true,

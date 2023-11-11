@@ -10,8 +10,6 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 
 
-
-
 class Register extends StatefulWidget {
   const Register({super.key});
 
@@ -43,6 +41,22 @@ class _RegisterState extends State<Register> {
     super.dispose();
   }
 
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: Colors.white,
+      appBar: isLoading? null :
+      AppBar(
+        elevation: 0,
+         iconTheme: const IconThemeData(
+          color: ElabColors.greyColor,
+        ),
+        backgroundColor: Colors.white,
+      ),
+      body: isLoading? loadingView():registrationForm(context),
+    );
+  }
   // check input validations
   void onCreate() {
     if ([emailController.text, nameController.text, phoneController.text, cityController.text, passwordController.text].any((text) => text.isEmpty)) { 
@@ -85,7 +99,7 @@ class _RegisterState extends State<Register> {
     });
     final supabase = Supabase.instance.client;
     try{
-      final AuthResponse res = await supabase.auth.signUp(
+       await supabase.auth.signUp(
         email: emailController.text,
         password: passwordController.text,
       );
@@ -97,7 +111,6 @@ class _RegisterState extends State<Register> {
 
 
       final Map<String, dynamic> profileData = {
-      'user_id': res.user!.id, // Reference to the user logged in user
       'name': nameController.text,
       'phone': phoneController.text,
       'city': cityController.text,
@@ -138,21 +151,6 @@ class _RegisterState extends State<Register> {
    
   }
 
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.white,
-      appBar: isLoading? null :
-      AppBar(
-        elevation: 0,
-         iconTheme: const IconThemeData(
-          color: ElabColors.greyColor,
-        ),
-        backgroundColor: Colors.white,
-      ),
-      body: isLoading? loadingView():registrationForm(context),
-    );
-  }
 
   //loading view
   Center loadingView() => const Center(child: SpinKitThreeBounce(color: ElabColors.primaryColor,));
