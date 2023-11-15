@@ -1,7 +1,9 @@
 import 'package:elab/style/colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:intl/intl.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 class ConfirmBooking extends StatefulWidget {
@@ -39,6 +41,73 @@ class _ConfirmBookingState extends State<ConfirmBooking> {
       testDetails.add(testDetail);
     }
      setState(() {
+      isLoading = false;
+    });
+  }
+
+  String addOneHourToCurrentTime(String currentTime) {
+    DateTime parsedTime = DateFormat('h:mm a').parse(currentTime);
+    DateTime newTime = parsedTime.add(const Duration(hours: 1));
+    String formattedTime = DateFormat('h:mm a').format(newTime);
+    return formattedTime;
+  }
+
+
+
+  Future bookTest() async{
+    setState(() {
+      isLoading = true;
+    });
+    try{
+      final patient = await supabase.from('patient').insert({
+        'name':testsMap['patientDetails']['name'],
+        'age':testsMap['patientDetails']['age'],
+        'gender':testsMap['patientDetails']['gender'],
+        'bloodgroup':testsMap['patientDetails']['bloodGroup']
+      }).select();
+
+      final patientId = patient[0]['id'];
+
+      final contact = await supabase.from('contact').insert({
+          'address': testsMap['contactDetails']['address'],
+          'phone' : testsMap['contactDetails']['phone'],
+          'landmark': testsMap['contactDetails']['landmark']
+      }).select();
+
+      final contactId = contact[0]['id'];
+
+      await supabase.from('booking').insert({
+        'tests': testsMap['tests'],
+        'timeslot' : testsMap['time'],
+        'patient_id' : patientId,
+        'contact_id': contactId
+      });
+
+      Fluttertoast.showToast(
+          msg: "Test Booked",
+          toastLength: Toast.LENGTH_LONG,
+          gravity: ToastGravity.TOP,
+          timeInSecForIosWeb: 2,
+          backgroundColor: ElabColors.greyColor,
+          textColor: Colors.white,
+          fontSize: 16.0
+        );
+
+      // ignore: use_build_context_synchronously
+      Navigator.pushNamed(context, '/dashboard');
+
+    } catch(e) {
+       Fluttertoast.showToast(
+          msg: "Unable to book test",
+          toastLength: Toast.LENGTH_LONG,
+          gravity: ToastGravity.TOP,
+          timeInSecForIosWeb: 2,
+          backgroundColor: ElabColors.greyColor,
+          textColor: Colors.white,
+          fontSize: 16.0
+        );
+  }
+    setState(() {
       isLoading = false;
     });
   }
@@ -86,16 +155,9 @@ class _ConfirmBookingState extends State<ConfirmBooking> {
                     ),
                   ),
 
-                  const SizedBox(height: 15,),
+                const SizedBox(height: 15,),
 
-                  Container(
-                  width: double.infinity,
-                  height: 1, // Adjust the height of the border line as needed
-                  decoration: BoxDecoration(
-                    color: ElabColors.greyColor2, // Color of the border line
-                    borderRadius: BorderRadius.circular(2), // Adjust the radius as needed
-                  ),
-                ),
+
                 
                 const SizedBox(height: 10,),
                 const Text("Tests Selected", style: TextStyle(color: ElabColors.greyColor, fontWeight: FontWeight.bold, fontSize: 16),),
@@ -135,7 +197,11 @@ class _ConfirmBookingState extends State<ConfirmBooking> {
                   }
                 ),
 
-                Container(
+      
+
+                const Text("Time Slot", style: TextStyle(color: ElabColors.greyColor, fontWeight: FontWeight.bold, fontSize: 16),),
+                const SizedBox(height: 10,),
+                 Container(
                   width: double.infinity,
                   height: 1, // Adjust the height of the border line as needed
                   decoration: BoxDecoration(
@@ -144,9 +210,14 @@ class _ConfirmBookingState extends State<ConfirmBooking> {
                   ),
                 ),
                 const SizedBox(height: 10,),
+                Text(testsMap['time']+' - '+addOneHourToCurrentTime(testsMap['time']), style: const TextStyle(
+                          fontWeight: FontWeight.bold, fontSize: 16,
+                        ),),
+
+               
+                const SizedBox(height: 20,),
 
                 const Text("Patient Details", style: TextStyle(color: ElabColors.greyColor, fontWeight: FontWeight.bold, fontSize: 16),),
-
                 const SizedBox(height: 10,),
                 Container(
                   width: double.infinity,
@@ -204,7 +275,7 @@ class _ConfirmBookingState extends State<ConfirmBooking> {
             padding: const EdgeInsets.fromLTRB(8,8,15,8),
             child: ElevatedButton(
               onPressed: () {
-                
+                bookTest();
               },
               style: ButtonStyle(
                 backgroundColor: const MaterialStatePropertyAll(ElabColors.primaryColor),

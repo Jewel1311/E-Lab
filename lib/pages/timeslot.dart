@@ -20,9 +20,18 @@ class _TimeSlotState extends State<TimeSlot> {
   String selectedTime = '';
 
   List<String> generateIntervals(String startTime, String endTime) {
+
     List<String> intervals = [];
     final format = DateFormat('HH:mm:ss');
     final currentTime = DateTime.now();
+
+   if (format.parse(startTime).hour < 6){
+    startTime = '06:00:00';
+   } 
+  
+   if (format.parse(endTime).hour > 18){
+    endTime = '18:00:00';
+   } 
 
     // Ensure startTime is greater than or equal to the current time
     final startDateTime = currentTime.hour > format.parse(startTime).hour

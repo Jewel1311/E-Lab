@@ -50,7 +50,7 @@ class _ContactInfoState extends State<ContactInfo> {
         );
     }else{
 
-      final Map contactDetials = {
+      final Map contactDetails = {
         'address':addressController.text,
         'phone': phoneController.text,
         'landmark':landMarkController.text
@@ -62,7 +62,7 @@ class _ContactInfoState extends State<ContactInfo> {
         'labId':testsMap['labId'],
         'time': testsMap['time'],
         'patientDetails': testsMap['patientDetails'],
-        'contactDetails' : contactDetials
+        'contactDetails' : contactDetails
       });
       
     }
