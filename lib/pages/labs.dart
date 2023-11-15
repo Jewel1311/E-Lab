@@ -43,7 +43,6 @@ class _LabsState extends State<Labs> {
 }
 
   Future getLabs() async{
-
     setState(() {
       isLoading = true;
     });
@@ -103,7 +102,9 @@ class _LabsState extends State<Labs> {
                     )
                   )
                 ),
-                child: ListTile(
+                child: GestureDetector (onTap:(){
+                   Navigator.pushNamed(context, '/tests', arguments: {'labId' :labs[index]['id'], 'labName':labs[index]['labname'], 'opentime':labs[index]['opentime'], 'closetime':labs[index]['closetime']});
+                } , child: ListTile(
                   contentPadding: const EdgeInsets.symmetric(vertical: 10, horizontal: 5),
                   title: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -132,13 +133,16 @@ class _LabsState extends State<Labs> {
                     child: Padding(
                       padding: const EdgeInsets.all(5.0),
                       child: GestureDetector(
-                        onTap: () {},
+                        onTap: () {
+                          Navigator.pushNamed(context, '/tests', arguments: {'labId' :labs[index]['id'], 'labName':labs[index]['labname'],'opentime':labs[index]['opentime'], 'closetime':labs[index]['closetime']});
+                        },
                         child: const Icon(Icons.keyboard_arrow_right_outlined, size: 25, color: Colors.black),
                       ),
                     ),
                   )
 
                 ),
+                )
             );
           }
         )

@@ -37,7 +37,7 @@ class _LoginState extends State<Login> {
           toastLength: Toast.LENGTH_LONG,
           gravity: ToastGravity.TOP,
           timeInSecForIosWeb: 2,
-          backgroundColor: ElabColors.secondaryColor,
+          backgroundColor: ElabColors.greyColor,
           textColor: Colors.white,
           fontSize: 16.0,
         );
@@ -68,6 +68,13 @@ class _LoginState extends State<Login> {
           email: emailController.text,
           password: passwordController.text,
         );
+
+        final profile = await supabase.from('profile').select('id').match({'user_id':
+        supabase.auth.currentUser!.id});
+        if(profile.length < 1){
+          await Supabase.instance.client.auth.signOut();
+          throw Exception();
+        }
         // ignore: use_build_context_synchronously
         Navigator.pushNamedAndRemoveUntil(context, '/dashboard', (route) => false);
       }catch(e){
