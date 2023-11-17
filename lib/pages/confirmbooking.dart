@@ -58,12 +58,21 @@ class _ConfirmBookingState extends State<ConfirmBooking> {
     setState(() {
       isLoading = true;
     });
+
+    DateTime inputDate = DateFormat("dd MMM yy").parse(testsMap['date']);
+    String formattedDate = DateFormat("yyyy-MM-dd").format(inputDate);
+
+
+
     try{
-      final patient = await supabase.from('patient').insert({
+      final patient = await supabase.from('patient').upsert({
+         if (testsMap['patientDetails']['id'] != '')
+            'id': testsMap['patientDetails']['id'],
         'name':testsMap['patientDetails']['name'],
         'age':testsMap['patientDetails']['age'],
         'gender':testsMap['patientDetails']['gender'],
-        'bloodgroup':testsMap['patientDetails']['bloodGroup']
+        'bloodgroup':testsMap['patientDetails']['bloodGroup'],
+        'user_id': supabase.auth.currentUser!.id
       }).select();
 
       final patientId = patient[0]['id'];
@@ -71,7 +80,8 @@ class _ConfirmBookingState extends State<ConfirmBooking> {
       final contact = await supabase.from('contact').insert({
           'address': testsMap['contactDetails']['address'],
           'phone' : testsMap['contactDetails']['phone'],
-          'landmark': testsMap['contactDetails']['landmark']
+          'landmark': testsMap['contactDetails']['landmark'],
+          'user_id': supabase.auth.currentUser!.id
       }).select();
 
       final contactId = contact[0]['id'];
@@ -79,8 +89,10 @@ class _ConfirmBookingState extends State<ConfirmBooking> {
       await supabase.from('booking').insert({
         'tests': testsMap['tests'],
         'timeslot' : testsMap['time'],
+        'date': formattedDate,
         'patient_id' : patientId,
-        'contact_id': contactId
+        'contact_id': contactId,
+        'lab_id': testsMap['labId']
       });
 
       Fluttertoast.showToast(
@@ -94,7 +106,7 @@ class _ConfirmBookingState extends State<ConfirmBooking> {
         );
 
       // ignore: use_build_context_synchronously
-      Navigator.pushNamed(context, '/dashboard');
+      Navigator.pushNamedAndRemoveUntil(context, '/dashboard', (route) => false);
 
     } catch(e) {
        Fluttertoast.showToast(
@@ -198,7 +210,7 @@ class _ConfirmBookingState extends State<ConfirmBooking> {
                 ),
 
       
-
+                
                 const Text("Time Slot", style: TextStyle(color: ElabColors.greyColor, fontWeight: FontWeight.bold, fontSize: 16),),
                 const SizedBox(height: 10,),
                  Container(
@@ -209,6 +221,10 @@ class _ConfirmBookingState extends State<ConfirmBooking> {
                     borderRadius: BorderRadius.circular(2), // Adjust the radius as needed
                   ),
                 ),
+                const SizedBox(height: 20,),
+                Text(testsMap['date'], style: const TextStyle(
+                          fontWeight: FontWeight.bold, fontSize: 16,
+                        ),),
                 const SizedBox(height: 10,),
                 Text(testsMap['time']+' - '+addOneHourToCurrentTime(testsMap['time']), style: const TextStyle(
                           fontWeight: FontWeight.bold, fontSize: 16,
@@ -227,7 +243,7 @@ class _ConfirmBookingState extends State<ConfirmBooking> {
                     borderRadius: BorderRadius.circular(2), // Adjust the radius as needed
                   ),
                 ),
-                const SizedBox(height: 10,),
+                const SizedBox(height: 20,),
 
                  Text(testsMap['patientDetails']['name'], style: const TextStyle(
                           fontWeight: FontWeight.bold, fontSize: 16,

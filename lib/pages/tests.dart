@@ -46,7 +46,8 @@ class _TestsState extends State<Tests> {
         backgroundColor: Colors.white,
         title:Text(labDetails['labName'], style: TextStyle(fontWeight: FontWeight.bold, fontFamily: GoogleFonts.hammersmithOne().fontFamily, color: Colors.black),),
       ),
-      body: Padding(
+      body: isLoading ?const SpinKitFadingCircle(color: ElabColors.primaryColor,):
+      tests.length == 0 ?const Center(child:Text("No tests available")):Padding(
       padding: const EdgeInsets.fromLTRB(10,10,10,0),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -62,7 +63,7 @@ class _TestsState extends State<Tests> {
             ),),
           ),
 
-          isLoading?const Text(''): testList()
+          testList()
         ],
       ),
     ),

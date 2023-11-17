@@ -61,6 +61,7 @@ class _ContactInfoState extends State<ContactInfo> {
         'price':testsMap['price'],
         'labId':testsMap['labId'],
         'time': testsMap['time'],
+        'date': testsMap['date'],
         'patientDetails': testsMap['patientDetails'],
         'contactDetails' : contactDetails
       });

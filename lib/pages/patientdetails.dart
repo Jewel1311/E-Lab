@@ -1,8 +1,10 @@
 import 'package:elab/style/colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
 class PatientDetails extends StatefulWidget {
   const PatientDetails({super.key});
@@ -14,18 +16,22 @@ class PatientDetails extends StatefulWidget {
 class _PatientDetailsState extends State<PatientDetails> {
 
   dynamic testsMap;
-
+  dynamic previousPatients;
+  bool isLoading = false;
+  String selectedPatient = '';
   String selectedGender = '';
   TextEditingController nameController = TextEditingController();
   TextEditingController ageController = TextEditingController();
   TextEditingController bloodGroupController = TextEditingController();
 
+  final supabase = Supabase.instance.client;
 
   @override
   void initState() {
     super.initState();
     Future.delayed(Duration.zero, () {
       testsMap = ModalRoute.of(context)?.settings.arguments as Map?;
+      getPreviousPatients();
     });
   }
 
@@ -55,7 +61,8 @@ class _PatientDetailsState extends State<PatientDetails> {
         'name': nameController.text,
         'age': ageController.text,
         'gender': selectedGender,
-        'bloodGroup': bloodGroupController.text
+        'bloodGroup': bloodGroupController.text,
+        'id':selectedPatient
       };
 
       Navigator.pushNamed(context, '/contactinfo', arguments: {
@@ -63,10 +70,21 @@ class _PatientDetailsState extends State<PatientDetails> {
         'price':testsMap['price'],
         'labId':testsMap['labId'],
         'time': testsMap['time'],
+        'date': testsMap['date'],
         'patientDetails': patientDetials
       });
       
     }
+  }
+
+  Future getPreviousPatients()async {
+    setState(() {
+      isLoading = true;
+    });
+    previousPatients = await supabase.from('patient').select().match({'user_id' :supabase.auth.currentUser!.id});
+    setState(() {
+      isLoading = false;
+    });
   }
 
   @override
@@ -81,11 +99,7 @@ class _PatientDetailsState extends State<PatientDetails> {
       ), 
       body: Padding(
         padding: const EdgeInsets.all(15.0),
-        child: Column(
-          children: [
-            patientForm(),
-          ],
-        ),
+        child: patientForm(),
       ),
       bottomNavigationBar:  bottomNavBar(),
     );
@@ -169,7 +183,39 @@ class _PatientDetailsState extends State<PatientDetails> {
                 prefixIcon: Icon(Icons.bloodtype,color: Colors.black,),    
                 ),
             ),
-              
+            const SizedBox(height: 30,),
+            const Text("Previous Patients", style: TextStyle(fontWeight:  FontWeight.bold, fontSize: 16, color: ElabColors.greyColor),),
+            isLoading? const SpinKitFadingCircle(color: ElabColors.primaryColor,):
+            Expanded(child:ListView.builder(
+                itemCount: previousPatients.length,
+                itemBuilder:(context, index) {
+                 return Row(
+                  children: [
+
+                    Radio(
+                      value: previousPatients[index]['id'].toString(),
+                      groupValue: selectedPatient,
+                      onChanged: (String? value) {
+                        setState(() {
+                          selectedPatient = value!;
+                           nameController.text = previousPatients[index]['name'];
+                           ageController.text = previousPatients[index]['age'].toString();
+                           selectedGender = previousPatients[index]['gender'];
+                        });
+                      },
+                      ),
+                    
+                    Text(previousPatients[index]['name']+ "  ",style: const TextStyle(
+                      fontSize: 16, fontWeight: FontWeight.bold
+                    ),),
+                    Text(previousPatients[index]['age'].toString(),style: const TextStyle(
+                      fontSize: 16, fontWeight: FontWeight.bold
+                    ),)
+                  ],
+                 );
+                } 
+              )
+            ),
             ],   
           );
   }

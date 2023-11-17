@@ -18,6 +18,7 @@ class _TimeSlotState extends State<TimeSlot> {
   bool slotsAvailable = true;
   bool isLoading = false;
   String selectedTime = '';
+  String formattedDate ='';
 
   List<String> generateIntervals(String startTime, String endTime) {
 
@@ -25,21 +26,22 @@ class _TimeSlotState extends State<TimeSlot> {
     final format = DateFormat('HH:mm:ss');
     final currentTime = DateTime.now();
 
-   if (format.parse(startTime).hour < 6){
+   if (_truncateMinutesAndSeconds(format.parse(startTime)).hour < 6 && _truncateMinutesAndSeconds(format.parse(startTime)).hour > 18){
     startTime = '06:00:00';
    } 
   
-   if (format.parse(endTime).hour > 18){
+   if (_truncateMinutesAndSeconds( format.parse(endTime)).hour > 18){
     endTime = '18:00:00';
    } 
 
     // Ensure startTime is greater than or equal to the current time
-    final startDateTime = currentTime.hour > format.parse(startTime).hour
+    final startDateTime = _truncateMinutesAndSeconds(currentTime).hour > format.parse(startTime).hour
         ? currentTime
         : format.parse(startTime);
 
     final start = TimeOfDay.fromDateTime(_truncateMinutesAndSeconds(startDateTime));
     final end = TimeOfDay.fromDateTime(_truncateMinutesAndSeconds(format.parse(endTime)));
+    
 
     TimeOfDay i = start;
     
@@ -62,6 +64,14 @@ class _TimeSlotState extends State<TimeSlot> {
     }
   }
 
+  void nextDayDate() {
+    DateTime now = DateTime.now();
+    if (now.hour == 23 && now.minute >= 31) {
+      now = now.add(const Duration(days: 1));
+    }
+    formattedDate = DateFormat('dd MMM yy').format(now);
+  }
+
   void slotRemainingCheck(List timeIntervalList){
     if (timeIntervalList.isEmpty || timeIntervalList.length < 2 ){
       slotsAvailable = false;
@@ -79,6 +89,7 @@ class _TimeSlotState extends State<TimeSlot> {
       testsMap = ModalRoute.of(context)?.settings.arguments as Map?;
       timeIntervalList = generateIntervals(testsMap['opentime'],testsMap['closetime']);
       slotRemainingCheck(timeIntervalList);
+      nextDayDate();
       setState(() {
         isLoading = false;
       });
@@ -92,7 +103,7 @@ class _TimeSlotState extends State<TimeSlot> {
         iconTheme: const IconThemeData(color: Colors.black),
         elevation: 0,
         backgroundColor: Colors.white,
-        title: Text('Choose Time Slot', style: TextStyle(color: Colors.black, fontFamily: GoogleFonts.hammersmithOne().fontFamily, fontWeight: FontWeight.bold),),
+        title: Text('Time Slot $formattedDate', style: TextStyle(color: Colors.black, fontFamily: GoogleFonts.hammersmithOne().fontFamily, fontWeight: FontWeight.bold),),
       ),
       body:   Column(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -169,7 +180,7 @@ class _TimeSlotState extends State<TimeSlot> {
             padding: const EdgeInsets.fromLTRB(8,8,15,8),
             child: ElevatedButton(
               onPressed: () {
-                Navigator.pushNamed(context, '/patientdetails', arguments: {'tests':testsMap['tests'], 'price':testsMap['price'], 'labId':testsMap['labId'], 'time':selectedTime});
+                Navigator.pushNamed(context, '/patientdetails', arguments: {'tests':testsMap['tests'], 'price':testsMap['price'], 'labId':testsMap['labId'], 'time':selectedTime, 'date':formattedDate});
               },
               style: ButtonStyle(
                 backgroundColor: const MaterialStatePropertyAll(ElabColors.primaryColor),

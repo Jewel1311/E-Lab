@@ -21,6 +21,7 @@ class _RegisterState extends State<Register> {
 
   bool emailValidationError = false;
   bool passwordValidationError = false;
+  bool confirmpasswordError = false;
   bool isLoading = false;
 
 
@@ -29,6 +30,8 @@ class _RegisterState extends State<Register> {
   final TextEditingController phoneController = TextEditingController();
   final TextEditingController cityController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
+  final TextEditingController confirmpasswordController = TextEditingController();
+
 
 
   @override
@@ -74,6 +77,7 @@ class _RegisterState extends State<Register> {
         setState(() {
           emailValidationError = false;
           passwordValidationError = false;
+          confirmpasswordError = false;
         });
         // email validation
         if(! EmailValidator.validate(emailController.text)){
@@ -87,7 +91,12 @@ class _RegisterState extends State<Register> {
             passwordValidationError = true;
           });
         }
-        if( emailValidationError == false && passwordValidationError == false){
+        if(passwordController.text != confirmpasswordController.text){
+          setState(() {
+            confirmpasswordError = true;
+          });
+        }
+        if( emailValidationError == false && passwordValidationError == false && confirmpasswordError == false){
           registerUser();
         }
     }
@@ -160,7 +169,7 @@ class _RegisterState extends State<Register> {
   SingleChildScrollView registrationForm(BuildContext context) {
     return SingleChildScrollView(
       child: Padding(
-        padding: const EdgeInsets.all(20.0),
+        padding: const EdgeInsets.fromLTRB(20,10,20,20),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -185,7 +194,9 @@ class _RegisterState extends State<Register> {
           cityField(),
           const SizedBox(height: 15),
           passwordField(),
-          const SizedBox(height: 30),
+          const SizedBox(height: 15),
+          confirmPasswordField(),
+          const SizedBox(height: 20),
           
 
           SizedBox(
@@ -212,7 +223,7 @@ class _RegisterState extends State<Register> {
               )
               ),
           ),
-             const SizedBox(height: 30),
+             const SizedBox(height: 20),
               Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
@@ -339,7 +350,28 @@ Column passwordField() {
     }
 
 
-
+Column confirmPasswordField() {
+      return Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text('Confirm Password', style:TextStyle(fontWeight: FontWeight.bold, color: ElabColors.greyColor, fontSize: 15, fontFamily:GoogleFonts.poppins().fontFamily),),
+              TextField(
+                controller: confirmpasswordController,
+                obscureText: true,
+                style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+                decoration: const InputDecoration(
+                  prefixIcon:Icon(Icons.keyboard_alt_rounded, color:Colors.black,size: 20, ),
+                ),     
+              ),
+                // show email validation error
+                if (confirmpasswordError)
+                  Text(
+                  "Passwords don't match",
+                  style: TextStyle(color: Colors.red, fontFamily: GoogleFonts.poppins().fontFamily),   
+                ),         
+              ],
+            );
+    }
 
  
 
