@@ -77,7 +77,9 @@ class _ConfirmBookingState extends State<ConfirmBooking> {
 
       final patientId = patient[0]['id'];
 
-      final contact = await supabase.from('contact').insert({
+      final contact = await supabase.from('contact').upsert({
+        if (testsMap['contactDetails']['id'] != '')
+            'id': testsMap['contactDetails']['id'],
           'address': testsMap['contactDetails']['address'],
           'phone' : testsMap['contactDetails']['phone'],
           'landmark': testsMap['contactDetails']['landmark'],

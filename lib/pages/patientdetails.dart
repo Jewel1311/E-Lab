@@ -20,6 +20,7 @@ class _PatientDetailsState extends State<PatientDetails> {
   bool isLoading = false;
   String selectedPatient = '';
   String selectedGender = '';
+  
   TextEditingController nameController = TextEditingController();
   TextEditingController ageController = TextEditingController();
   TextEditingController bloodGroupController = TextEditingController();
@@ -29,6 +30,9 @@ class _PatientDetailsState extends State<PatientDetails> {
   @override
   void initState() {
     super.initState();
+    setState(() {
+      isLoading = true;
+    });
     Future.delayed(Duration.zero, () {
       testsMap = ModalRoute.of(context)?.settings.arguments as Map?;
       getPreviousPatients();
@@ -78,10 +82,7 @@ class _PatientDetailsState extends State<PatientDetails> {
   }
 
   Future getPreviousPatients()async {
-    setState(() {
-      isLoading = true;
-    });
-    previousPatients = await supabase.from('patient').select().match({'user_id' :supabase.auth.currentUser!.id});
+    previousPatients = await supabase.from('patient').select().match({'user_id' :supabase.auth.currentUser!.id}).order('id');
     setState(() {
       isLoading = false;
     });
@@ -185,14 +186,47 @@ class _PatientDetailsState extends State<PatientDetails> {
             ),
             const SizedBox(height: 30,),
             const Text("Previous Patients", style: TextStyle(fontWeight:  FontWeight.bold, fontSize: 16, color: ElabColors.greyColor),),
+            const SizedBox(height: 5,),
             isLoading? const SpinKitFadingCircle(color: ElabColors.primaryColor,):
-            Expanded(child:ListView.builder(
-                itemCount: previousPatients.length,
-                itemBuilder:(context, index) {
-                 return Row(
-                  children: [
+            patientDetailsView(),
+            ],   
+          );
+  }
 
-                    Radio(
+  Expanded patientDetailsView() {
+    return Expanded(child:ListView.builder(
+              itemCount: previousPatients.length,
+              itemBuilder:(context, index) {
+                return Container(
+              margin: const EdgeInsets.fromLTRB(0,8,0,8),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: const BorderRadius.all(Radius.circular(8)),
+                boxShadow: [
+                BoxShadow(
+                  color: Colors.grey.withOpacity(0.5),
+                  spreadRadius: 1,
+                  blurRadius: 3,
+                  offset: const Offset(0, 2), // changes position of shadow
+                ),
+              ],
+              ),
+              child: Padding(
+                padding: const EdgeInsets.fromLTRB(0,5,0,5),
+                child: ListTile(
+                    title: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(previousPatients[index]['name']+ "  ",style: const TextStyle(
+                          fontSize: 16, fontWeight: FontWeight.bold
+                        ),),
+                     const SizedBox(height: 5,),
+                    Text("Age: ${previousPatients[index]['age'].toString()}",style: const TextStyle(
+                      fontSize: 16, fontWeight: FontWeight.bold
+                    ),),
+                     ],
+                    ),
+                    trailing: Radio(
                       value: previousPatients[index]['id'].toString(),
                       groupValue: selectedPatient,
                       onChanged: (String? value) {
@@ -201,22 +235,15 @@ class _PatientDetailsState extends State<PatientDetails> {
                            nameController.text = previousPatients[index]['name'];
                            ageController.text = previousPatients[index]['age'].toString();
                            selectedGender = previousPatients[index]['gender'];
+                           bloodGroupController.text = previousPatients[index]['bloodgroup'];
                         });
                       },
                       ),
-                    
-                    Text(previousPatients[index]['name']+ "  ",style: const TextStyle(
-                      fontSize: 16, fontWeight: FontWeight.bold
-                    ),),
-                    Text(previousPatients[index]['age'].toString(),style: const TextStyle(
-                      fontSize: 16, fontWeight: FontWeight.bold
-                    ),)
-                  ],
-                 );
-                } 
+                ),
               )
-            ),
-            ],   
+                );
+              } 
+            )
           );
   }
 

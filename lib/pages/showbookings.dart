@@ -52,7 +52,7 @@ String convert24HourTo12Hour(String time24) {
 
   @override
   Widget build(BuildContext context) {
-    return bookingCount.length == 0 ?
+    return isLoading?const Text(''):bookingCount.length == 0 ?
     const Center(child: Text("No bookings yet", style: TextStyle(fontWeight: FontWeight.bold,
     fontSize: 16),),)
     :
