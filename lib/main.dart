@@ -1,3 +1,4 @@
+import 'package:elab/pages/bookingdetails.dart';
 import 'package:elab/pages/confirmbooking.dart';
 import 'package:elab/pages/contactinfo.dart';
 import 'package:elab/pages/dashboard.dart';
@@ -40,6 +41,7 @@ class Elab extends StatelessWidget {
         '/contactinfo' :(context) => const ContactInfo(),
         '/timeslot':(context) => const TimeSlot(),
         '/confirmbooking' :(context) => const ConfirmBooking(),
+        '/bookingdetails' :(context) => const BookingDetails()
       },
     );
   }

@@ -14,8 +14,9 @@ class _ShowBookingsState extends State<ShowBookings> {
 
   dynamic bookingsStream;
   dynamic bookingCount;
-  final supabase = Supabase.instance.client;
   bool isLoading = false;
+
+  final supabase = Supabase.instance.client;
 
   @override
   void initState() {
@@ -38,10 +39,10 @@ class _ShowBookingsState extends State<ShowBookings> {
   }
 
   String formatToCustomFormat(String inputDate) {
-  DateTime dateTime = DateFormat('yyyy-MM-dd').parse(inputDate);
-  String formattedDate = DateFormat('dd MMM yyyy').format(dateTime);
-  return formattedDate;
-}
+    DateTime dateTime = DateFormat('yyyy-MM-dd').parse(inputDate);
+    String formattedDate = DateFormat('dd MMM yyyy').format(dateTime);
+    return formattedDate;
+  }
 
 String convert24HourTo12Hour(String time24) {
   DateTime dateTime = DateFormat('HH:mm').parse(time24);
@@ -52,7 +53,9 @@ String convert24HourTo12Hour(String time24) {
 
   @override
   Widget build(BuildContext context) {
-    return isLoading?const Text(''):bookingCount.length == 0 ?
+    return isLoading?const Center(child: Text("Loading...", style: TextStyle(
+      fontSize: 16, fontWeight: FontWeight.bold
+    ),),):bookingCount.length == 0 ?
     const Center(child: Text("No bookings yet", style: TextStyle(fontWeight: FontWeight.bold,
     fontSize: 16),),)
     :
@@ -68,8 +71,14 @@ String convert24HourTo12Hour(String time24) {
           return ListView.builder(
             itemCount: booking.length,
             itemBuilder: (context, index){
-             return Container(
-              margin: const EdgeInsets.fromLTRB(10,8,10,5),
+             return GestureDetector(
+                onTap: () {
+                  Navigator.pushNamed(context, '/bookingdetails', arguments: {
+                    'bookingId': booking[index]['id'] 
+                  });
+                },
+                child:Container(
+              margin: const EdgeInsets.fromLTRB(10,8,10,10),
               decoration: BoxDecoration(
                   color: Colors.white,
                   borderRadius: const BorderRadius.all(Radius.circular(8)),
@@ -119,6 +128,7 @@ String convert24HourTo12Hour(String time24) {
                   ],
                 ),
               )
+              )
              );
             }
             
@@ -128,4 +138,5 @@ String convert24HourTo12Hour(String time24) {
     }
   );
   }
+  
 }

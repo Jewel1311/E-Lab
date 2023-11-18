@@ -41,6 +41,7 @@ class _RegisterState extends State<Register> {
     phoneController.dispose();
     cityController.dispose();
     passwordController.dispose();
+    confirmpasswordController.dispose();
     super.dispose();
   }
 
@@ -62,7 +63,7 @@ class _RegisterState extends State<Register> {
   }
   // check input validations
   void onCreate() {
-    if ([emailController.text, nameController.text, phoneController.text, cityController.text, passwordController.text].any((text) => text.isEmpty)) { 
+    if ([emailController.text, nameController.text, phoneController.text, cityController.text, passwordController.text, confirmpasswordController.text].any((text) => text.isEmpty)) { 
 
         Fluttertoast.showToast(
           msg: "All Fields are required",

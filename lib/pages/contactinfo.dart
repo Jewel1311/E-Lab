@@ -105,7 +105,7 @@ class _ContactInfoState extends State<ContactInfo> {
           children: [
             contactForm(),
             const SizedBox(height: 30,),
-            const Text("Previous Contacts", style: TextStyle(fontWeight:  FontWeight.bold, fontSize: 16, color: ElabColors.greyColor),),
+            const Text("Previous Contact Details", style: TextStyle(fontWeight:  FontWeight.bold, fontSize: 16, color: ElabColors.greyColor),),
             const SizedBox(height: 5,),
             isLoading? const SpinKitFadingCircle(color: ElabColors.primaryColor,):
             perviousContactsView(),
@@ -171,7 +171,7 @@ class _ContactInfoState extends State<ContactInfo> {
               itemCount: previousContactDetails.length,
               itemBuilder:(context, index) {
                 return Container(
-                margin: const EdgeInsets.fromLTRB(0,8,0,5),
+                margin: const EdgeInsets.fromLTRB(5,8,5,5),
                 decoration: BoxDecoration(
                 color: Colors.white,
                 borderRadius: const BorderRadius.all(Radius.circular(8)),

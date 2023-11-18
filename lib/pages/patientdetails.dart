@@ -198,7 +198,7 @@ class _PatientDetailsState extends State<PatientDetails> {
               itemCount: previousPatients.length,
               itemBuilder:(context, index) {
                 return Container(
-              margin: const EdgeInsets.fromLTRB(0,8,0,8),
+              margin: const EdgeInsets.fromLTRB(5,8,5,8),
               decoration: BoxDecoration(
                 color: Colors.white,
                 borderRadius: const BorderRadius.all(Radius.circular(8)),
