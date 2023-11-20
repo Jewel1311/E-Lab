@@ -43,6 +43,7 @@ dependencies:
   google_fonts: ^6.1.0
   email_validator: ^2.1.17
   flutter_dotenv: ^5.1.0
+  onesignal_flutter: ^3.5.1
   
 
 flutter_native_splash: 

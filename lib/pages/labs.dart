@@ -42,10 +42,13 @@ class _LabsState extends State<Labs> {
     return time12Hour;
 }
 
+
+
   Future getLabs() async{
     setState(() {
       isLoading = true;
     });
+
     if (searchController.text == '') {
       final uid = supabase.auth.currentUser!.id;
       final data = await supabase.from('profile').select().match({'user_id':uid});
@@ -63,6 +66,7 @@ class _LabsState extends State<Labs> {
   
   @override
   Widget build(BuildContext context) {
+
 
     return Container(
       color: Colors.white,

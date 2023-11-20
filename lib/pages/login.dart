@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:onesignal_flutter/onesignal_flutter.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 class Login extends StatefulWidget {
@@ -18,6 +19,7 @@ class _LoginState extends State<Login> {
   bool emailValidationError = false;
   bool credentialError = false;
   bool isLoading = false;
+  String userId = "";
 
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
@@ -75,6 +77,10 @@ class _LoginState extends State<Login> {
           await Supabase.instance.client.auth.signOut();
           throw Exception();
         }
+        await OneSignal.shared.getDeviceState().then((deviceState) {
+            userId = deviceState!.userId.toString(); // Use this ID to identify the user
+        });
+        await supabase.from('profile').upsert({'id':profile[0]['id'],'onesignaluserid':userId});
         // ignore: use_build_context_synchronously
         Navigator.pushNamedAndRemoveUntil(context, '/dashboard', (route) => false);
       }catch(e){
