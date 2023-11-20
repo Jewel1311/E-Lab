@@ -1,6 +1,7 @@
 import 'package:elab/pages/labs.dart';
 import 'package:elab/pages/profile.dart';
 import 'package:elab/pages/showbookings.dart';
+import 'package:elab/pages/viewresults.dart';
 import 'package:elab/style/colors.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -42,7 +43,7 @@ class _DashboardState extends State<Dashboard> {
         children:const [
           Labs(),
           ShowBookings(),
-          Center(child: Text('Results')),
+          ViewResults(),
           Profile(),
         ],
         ),

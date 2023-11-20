@@ -1,3 +1,4 @@
+import 'package:elab/style/colors.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
@@ -22,6 +23,19 @@ class _ShowBookingsState extends State<ShowBookings> {
   void initState() {
     super.initState();
     getBookingData();
+  }
+
+  Color _getStatusColor(String status) {
+    switch (status.toLowerCase()) {
+      case 'rejected':
+        return Colors.red;
+      case 'confirmed':
+        return Colors.green;
+      case 'completed':
+        return ElabColors.primaryColor;
+      default:
+        return Colors.amberAccent.shade700;
+    }
   }
 
   Future getBookingData() async{
@@ -118,7 +132,7 @@ String convert24HourTo12Hour(String time24) {
                           children: [
                             const Text('status: '),
                             Text(booking[index]['status'],
-                            style: TextStyle(color: Colors.amberAccent.shade700, fontSize: 15, fontFamily: GoogleFonts.poppins().fontFamily),
+                            style: TextStyle(color: _getStatusColor(booking[index]['status']), fontSize: 15, fontFamily: GoogleFonts.poppins().fontFamily),
                             ),
                           ],
                         ),

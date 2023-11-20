@@ -1,4 +1,3 @@
-import 'package:elab/pages/patientdetails.dart';
 import 'package:elab/style/colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
@@ -83,7 +82,7 @@ class _BookingDetailsState extends State<BookingDetails> {
         title: Text('Booking Details', style: TextStyle(color: Colors.black, fontFamily: GoogleFonts.hammersmithOne().fontFamily, fontWeight: FontWeight.bold),),
       ),
       body:isLoading?const Center(child: SpinKitFadingCircle(color: ElabColors.primaryColor),): 
-          listBookingDetails(),
+          SingleChildScrollView(child: listBookingDetails()),
       bottomNavigationBar:  isLoading ?null : bookingDetails[0]['status'] =='pending'?
       bottomNavBar():null,
     );

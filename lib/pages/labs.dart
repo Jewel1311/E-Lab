@@ -118,10 +118,25 @@ class _LabsState extends State<Labs> {
                           ),
                         ],
                       ),
+                      const SizedBox(height: 8,),
+                    
+                      Padding(
+                        padding: const EdgeInsets.fromLTRB(5,0,0,0),
+                        child: Row(
+                        children: [
+                          const Icon(Icons.phone, size: 20,),
+                          const SizedBox(width: 5,),
+                          SelectableText(labs[index]['phone'].toString())
+                        ],
+                                          ),
+                      ),
                    const SizedBox(height: 10,),
-                   Text(labs[index]['city']+ ' | '+ convert24HourTo12Hour(labs[index]['opentime']) + ' - '+  convert24HourTo12Hour(labs[index]['closetime']),
-                    style: const TextStyle(color: Colors.black),
-                    ),
+                   Padding(
+                     padding: const EdgeInsets.fromLTRB(5,0,0,0),
+                     child: Text(labs[index]['city']+ ' | '+ convert24HourTo12Hour(labs[index]['opentime']) + ' - '+  convert24HourTo12Hour(labs[index]['closetime']),
+                      style: const TextStyle(color: Colors.black),
+                      ),
+                   ),
                     ],
                   ),
                   trailing: Container(
