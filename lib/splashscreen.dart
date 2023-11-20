@@ -2,6 +2,7 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:elab/style/colors.dart';
 import 'package:flutter/material.dart';
+import 'package:onesignal_flutter/onesignal_flutter.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 
@@ -28,6 +29,10 @@ class _SplashScreenState extends State<SplashScreen> {
     url: dotenv.env['URL']!,
     anonKey: dotenv.env['PUBLIC_KEY']!,
     );
+
+
+    OneSignal.shared.setAppId(dotenv.env['APP_ID']!);
+   
 
     final supabase = Supabase.instance.client;
 

@@ -5,6 +5,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:onesignal_flutter/onesignal_flutter.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 
@@ -23,6 +24,7 @@ class _RegisterState extends State<Register> {
   bool passwordValidationError = false;
   bool confirmpasswordError = false;
   bool isLoading = false;
+  String userId = "";
 
 
   final TextEditingController emailController = TextEditingController();
@@ -126,9 +128,14 @@ class _RegisterState extends State<Register> {
       'city': cityController.text,
       };
 
-      await supabase
+      final profile = await supabase
       .from('profile') 
-      .upsert([profileData]);
+      .upsert([profileData]).select();
+
+      await OneSignal.shared.getDeviceState().then((deviceState) {
+            userId = deviceState!.userId.toString(); // Use this ID to identify the user
+        });
+      await supabase.from('profile').upsert({'id':profile[0]['id'],'onesignaluserid':userId});
 
       // ignore: use_build_context_synchronously
       Navigator.pushNamedAndRemoveUntil(context, '/dashboard', (route) => false);
