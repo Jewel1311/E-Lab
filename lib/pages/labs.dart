@@ -55,7 +55,7 @@ class _LabsState extends State<Labs> {
       city = data[0]['city'];
     }
     else{
-      city = searchController.text;
+      city = searchController.text.trim();
     }
     labs = await supabase.from('labs').select().ilike('city', '%$city%');
 

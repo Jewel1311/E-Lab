@@ -49,7 +49,7 @@ class _LoginState extends State<Login> {
           credentialError = false;
         });
         // email validation
-        if(! EmailValidator.validate(emailController.text)){
+        if(! EmailValidator.validate(emailController.text.trim())){
           setState(() {
             emailValidationError = true;
           });
@@ -67,8 +67,8 @@ class _LoginState extends State<Login> {
       final supabase = Supabase.instance.client;
       try{
         await supabase.auth.signInWithPassword(
-          email: emailController.text,
-          password: passwordController.text,
+          email: emailController.text.trim(),
+          password: passwordController.text.trim(),
         );
 
         final profile = await supabase.from('profile').select('id').match({'user_id':

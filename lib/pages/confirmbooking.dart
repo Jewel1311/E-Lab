@@ -137,11 +137,8 @@ class _ConfirmBookingState extends State<ConfirmBooking> {
         title: Text('Summary', style: TextStyle(color: Colors.black, fontFamily: GoogleFonts.hammersmithOne().fontFamily, fontWeight: FontWeight.bold),),
       ),
       body: isLoading? const SpinKitFadingCircle(color: ElabColors.primaryColor,) :
-            Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: [ 
+           SingleChildScrollView( child:
              listBookingDetails(),
-            ],
           ),
     
       bottomNavigationBar: isLoading ?null :bottomNavBar(), 
@@ -188,6 +185,7 @@ class _ConfirmBookingState extends State<ConfirmBooking> {
 
                 ListView.builder(
                   shrinkWrap: true,
+                  physics: NeverScrollableScrollPhysics(),
                   itemCount: testDetails.length,
                   itemBuilder: (context , index) {
                     return Column(

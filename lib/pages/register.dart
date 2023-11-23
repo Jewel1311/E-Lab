@@ -83,18 +83,18 @@ class _RegisterState extends State<Register> {
           confirmpasswordError = false;
         });
         // email validation
-        if(! EmailValidator.validate(emailController.text)){
+        if(! EmailValidator.validate(emailController.text.trim())){
           setState(() {
             emailValidationError = true;
           });
         }
         //password validation
-        if(passwordController.text.length < 6){
+        if(passwordController.text.trim().length < 6){
           setState(() {
             passwordValidationError = true;
           });
         }
-        if(passwordController.text != confirmpasswordController.text){
+        if(passwordController.text.trim() != confirmpasswordController.text.trim()){
           setState(() {
             confirmpasswordError = true;
           });
@@ -112,20 +112,20 @@ class _RegisterState extends State<Register> {
     final supabase = Supabase.instance.client;
     try{
        await supabase.auth.signUp(
-        email: emailController.text,
-        password: passwordController.text,
+        email: emailController.text.trim(),
+        password: passwordController.text.trim(),
       );
       
       await supabase.auth.signInWithPassword(
-        email: emailController.text,
-        password: passwordController.text,
+        email: emailController.text.trim(),
+        password: passwordController.text.trim(),
       );
 
 
       final Map<String, dynamic> profileData = {
-      'name': nameController.text,
-      'phone': phoneController.text,
-      'city': cityController.text,
+      'name': nameController.text.trim(),
+      'phone': phoneController.text.trim(),
+      'city': cityController.text.trim(),
       };
 
       final profile = await supabase

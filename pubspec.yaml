@@ -44,6 +44,7 @@ dependencies:
   email_validator: ^2.1.17
   flutter_dotenv: ^5.1.0
   onesignal_flutter: ^3.5.1
+  flutter_launcher_icons: ^0.13.1
   
 
 flutter_native_splash: 
@@ -55,6 +56,11 @@ flutter_native_splash:
 dev_dependencies:
   flutter_test:
     sdk: flutter
+
+flutter_launcher_icons:
+  android: "launcher_icon"
+  ios: true
+  image_path: "assets/images/icon.png"
 
   # The "flutter_lints" package below contains a set of recommended lints to
   # encourage good coding practices. The lint set provided by the package is

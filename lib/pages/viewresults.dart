@@ -21,11 +21,15 @@ class _ViewResultsState extends State<ViewResults> {
 
   final supabase = Supabase.instance.client;
 
+  
+
   @override
   void initState() {
     super.initState();
     getBookingData();
   }
+
+
 
   Future getBookingData() async {
     setState(() {
@@ -72,7 +76,7 @@ class _ViewResultsState extends State<ViewResults> {
       targetFile.writeAsBytesSync(file);
 
       Fluttertoast.showToast(
-          msg: "File downloaded successfully ",
+          msg: "File saved to Downloads ",
           toastLength: Toast.LENGTH_LONG,
           gravity: ToastGravity.TOP,
           timeInSecForIosWeb: 2,

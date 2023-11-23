@@ -25,6 +25,7 @@ class _BookingDetailsState extends State<BookingDetails> {
   dynamic patientDetails;
   List testDetails = [];
   int totalPrice = 0;
+  String bookingStatus = '';
 
   @override
   void initState() {
@@ -39,6 +40,13 @@ class _BookingDetailsState extends State<BookingDetails> {
   }
 
   Future getBookingInfo() async {
+    supabase.from('booking')
+    .stream(primaryKey: ['id']).eq('id', bookingId['bookingId'])
+    .listen((List<Map<String, dynamic>> data) {
+      setState(() {
+        bookingStatus = data[0]['status'];
+      });
+  });
     bookingDetails = await supabase
         .from('booking')
         .select()
@@ -51,6 +59,7 @@ class _BookingDetailsState extends State<BookingDetails> {
         .from('patient')
         .select()
         .match({'id': bookingDetails[0]['patient_id']});
+
     for (int id in bookingDetails[0]['tests']) {
       final testDetail =
           await supabase.from('tests').select().match({'id': id});
@@ -107,7 +116,7 @@ class _BookingDetailsState extends State<BookingDetails> {
       targetFile.writeAsBytesSync(file);
 
       Fluttertoast.showToast(
-          msg: "File downloaded successfully ",
+          msg: "File saved to Downloads ",
           toastLength: Toast.LENGTH_LONG,
           gravity: ToastGravity.TOP,
           timeInSecForIosWeb: 2,
@@ -151,7 +160,7 @@ class _BookingDetailsState extends State<BookingDetails> {
           : SingleChildScrollView(child: listBookingDetails()),
       bottomNavigationBar: isLoading
           ? null
-          : bookingDetails[0]['status'] == 'pending'
+          : bookingStatus == 'pending'
               ? bottomNavBar()
               : null,
     );
@@ -183,9 +192,9 @@ class _BookingDetailsState extends State<BookingDetails> {
             Row(
               children: [
                 const Text("status: "),
-                Text(bookingDetails[0]['status'],
+                Text(bookingStatus,
                     style: TextStyle(
-                        color: _getStatusColor(bookingDetails[0]['status']),
+                        color: _getStatusColor(bookingStatus),
                         fontSize: 15,
                         fontFamily: GoogleFonts.poppins().fontFamily))
               ],
@@ -217,6 +226,7 @@ class _BookingDetailsState extends State<BookingDetails> {
             ),
             ListView.builder(
                 shrinkWrap: true,
+                physics: NeverScrollableScrollPhysics(),
                 itemCount: testDetails.length,
                 itemBuilder: (context, index) {
                   return Column(

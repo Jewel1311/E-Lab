@@ -99,7 +99,7 @@ class _ContactInfoState extends State<ContactInfo> {
         title: Text('Contact Information', style: TextStyle(color: Colors.black, fontFamily: GoogleFonts.hammersmithOne().fontFamily, fontWeight: FontWeight.bold),),
       ), 
       body: Padding(
-        padding: const EdgeInsets.all(15.0),
+        padding: const EdgeInsets.fromLTRB(15,5,15,0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -132,7 +132,7 @@ class _ContactInfoState extends State<ContactInfo> {
                 ),
               ),
 
-            const SizedBox(height: 30,),
+            const SizedBox(height: 20,),
 
             const Text("Phone Number",style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16,color: ElabColors.greyColor), ),
 
@@ -149,7 +149,7 @@ class _ContactInfoState extends State<ContactInfo> {
               ],
             ),
 
-            const SizedBox(height: 30,),
+            const SizedBox(height: 20,),
 
             const Text("Landmark",style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16,color: ElabColors.greyColor), ),
 

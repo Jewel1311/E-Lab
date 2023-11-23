@@ -99,7 +99,7 @@ class _PatientDetailsState extends State<PatientDetails> {
         title: Text('Patient Details', style: TextStyle(color: Colors.black, fontFamily: GoogleFonts.hammersmithOne().fontFamily, fontWeight: FontWeight.bold),),
       ), 
       body: Padding(
-        padding: const EdgeInsets.all(15.0),
+        padding: const EdgeInsets.fromLTRB(15,5,15,0),
         child: patientForm(),
       ),
       bottomNavigationBar:  bottomNavBar(),
@@ -119,7 +119,7 @@ class _PatientDetailsState extends State<PatientDetails> {
                 ),
               ),
 
-            const SizedBox(height: 20,),
+            const SizedBox(height: 15,),
 
             const Text("Age",style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16,color: ElabColors.greyColor), ),
 
@@ -136,7 +136,7 @@ class _PatientDetailsState extends State<PatientDetails> {
               ],
             ),
 
-            const SizedBox(height: 20,),
+            const SizedBox(height: 15,),
 
             const Text("Gender",style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16,color: ElabColors.greyColor), ),
             Row(
@@ -173,7 +173,7 @@ class _PatientDetailsState extends State<PatientDetails> {
               ],
             ),
 
-            const SizedBox(height: 20,),
+            const SizedBox(height: 15,),
 
             const Text("Blood Group",style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16,color: ElabColors.greyColor), ),
 
