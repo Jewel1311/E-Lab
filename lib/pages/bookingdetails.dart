@@ -160,7 +160,7 @@ class _BookingDetailsState extends State<BookingDetails> {
           : SingleChildScrollView(child: listBookingDetails()),
       bottomNavigationBar: isLoading
           ? null
-          : bookingStatus == 'pending'
+          : bookingStatus == 'pending' && bookingDetails[0]['pay_status'] =='pending'
               ? bottomNavBar()
               : null,
     );
@@ -378,6 +378,8 @@ class _BookingDetailsState extends State<BookingDetails> {
                       fontSize: 18,
                       color: Colors.green),
                 ),
+                Text(" ("+bookingDetails[0]['pay_status']+")",style: TextStyle(fontFamily: GoogleFonts.poppins().fontFamily, fontWeight: FontWeight.bold),)
+
               ],
             ),
             const SizedBox(height: 10,),

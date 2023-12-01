@@ -1,10 +1,13 @@
 import 'package:elab/style/colors.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:razorpay_flutter/razorpay_flutter.dart';
+
 
 class ConfirmBooking extends StatefulWidget {
   const ConfirmBooking({super.key});
@@ -20,6 +23,8 @@ class _ConfirmBookingState extends State<ConfirmBooking> {
   dynamic labDetails;
   bool isLoading = false;
   List testDetails = [];
+  String payment = "pending";
+  bool isChecked = false;
 
   @override
   void initState() {
@@ -94,7 +99,8 @@ class _ConfirmBookingState extends State<ConfirmBooking> {
         'date': formattedDate,
         'patient_id' : patientId,
         'contact_id': contactId,
-        'lab_id': testsMap['labId']
+        'lab_id': testsMap['labId'],
+        'pay_status': payment
       });
 
       Fluttertoast.showToast(
@@ -285,13 +291,32 @@ class _ConfirmBookingState extends State<ConfirmBooking> {
     return Material( 
       elevation: 8,
       child: Row(
-        mainAxisAlignment: MainAxisAlignment.end,
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
+            Row(
+              children: [
+                Checkbox(
+                value: isChecked,
+                onChanged: (bool? value) {
+                  setState(() {
+                    isChecked = value ?? false;
+                  });
+                },
+          ),
+          Text('Pay Now',style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),)
+          ],
+            ),      
+           
           Padding(
             padding: const EdgeInsets.fromLTRB(8,8,15,8),
             child: ElevatedButton(
               onPressed: () {
-                bookTest();
+                if (isChecked){
+                  payNow();
+                }
+                else{
+                  bookTest();
+                }
               },
               style: ButtonStyle(
                 backgroundColor: const MaterialStatePropertyAll(ElabColors.primaryColor),
@@ -308,4 +333,62 @@ class _ConfirmBookingState extends State<ConfirmBooking> {
     );
   }
 
+  Future payNow() async{
+    await dotenv.load(fileName: ".env");
+    Razorpay razorpay = Razorpay();
+    var options = {
+      'key': dotenv.env['RAZKEY'],
+      'amount': testsMap['price']*100,
+      'description': 'Book Tests',
+      'retry': {'enabled': true, 'max_count': 1},
+      'send_sms_hash': true,
+      'external': {
+        'wallets': ['paytm']
+      }
+    };
+    razorpay.on(Razorpay.EVENT_PAYMENT_ERROR, handlePaymentErrorResponse);
+    razorpay.on(Razorpay.EVENT_PAYMENT_SUCCESS, handlePaymentSuccessResponse);
+    razorpay.on(Razorpay.EVENT_EXTERNAL_WALLET, handleExternalWalletSelected);
+    razorpay.open(options);
+  }
+
+  handlePaymentErrorResponse(PaymentFailureResponse response) {
+     showAlertDialog(context, "Payment Failed");
+  }
+
+  handlePaymentSuccessResponse(PaymentSuccessResponse response) {
+    payment = 'paid';
+    bookTest();
+    
+  }
+
+  handleExternalWalletSelected(ExternalWalletResponse response) {
+    showAlertDialog(context, "External Wallet Selected ${response.walletName}");
+    payment = 'paid';
+    bookTest();
+  }
+
+  void showAlertDialog(BuildContext context, String message,){
+    // set up the buttons
+    Widget continueButton = ElevatedButton(
+      child: const Text("Ok"),
+      onPressed:  () {
+        Navigator.pop(context);
+      },
+    );
+    // set up the AlertDialog
+    AlertDialog alert = AlertDialog(
+      content: Text(message),
+      actions: [
+        continueButton,
+      ],
+    );
+    // show the dialog
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return alert;
+      },
+    );
+  }
 }
