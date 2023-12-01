@@ -98,9 +98,10 @@ class _PatientDetailsState extends State<PatientDetails> {
         backgroundColor: Colors.white,
         title: Text('Patient Details', style: TextStyle(color: Colors.black, fontFamily: GoogleFonts.hammersmithOne().fontFamily, fontWeight: FontWeight.bold),),
       ), 
-      body: Padding(
+      body:  SingleChildScrollView(child: Padding(
         padding: const EdgeInsets.fromLTRB(15,5,15,0),
         child: patientForm(),
+      ),
       ),
       bottomNavigationBar:  bottomNavBar(),
     );
@@ -193,8 +194,10 @@ class _PatientDetailsState extends State<PatientDetails> {
           );
   }
 
-  Expanded patientDetailsView() {
-    return Expanded(child:ListView.builder(
+  ListView patientDetailsView() {
+    return ListView.builder(
+              shrinkWrap: true,
+              physics:NeverScrollableScrollPhysics(),
               itemCount: previousPatients.length,
               itemBuilder:(context, index) {
                 return Container(
@@ -243,7 +246,6 @@ class _PatientDetailsState extends State<PatientDetails> {
               )
                 );
               } 
-            )
           );
   }
 

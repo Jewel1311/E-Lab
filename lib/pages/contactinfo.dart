@@ -98,7 +98,7 @@ class _ContactInfoState extends State<ContactInfo> {
         backgroundColor: Colors.white,
         title: Text('Contact Information', style: TextStyle(color: Colors.black, fontFamily: GoogleFonts.hammersmithOne().fontFamily, fontWeight: FontWeight.bold),),
       ), 
-      body: Padding(
+      body:SingleChildScrollView(child: Padding(
         padding: const EdgeInsets.fromLTRB(15,5,15,0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -112,6 +112,7 @@ class _ContactInfoState extends State<ContactInfo> {
           ],
         ),
 
+      ),
       ),
       bottomNavigationBar:  bottomNavBar(),
     );
@@ -166,8 +167,10 @@ class _ContactInfoState extends State<ContactInfo> {
           );
   }
 
-  Expanded perviousContactsView() {
-    return Expanded(child:ListView.builder(
+  ListView perviousContactsView() {
+    return ListView.builder(
+              shrinkWrap: true,
+              physics: NeverScrollableScrollPhysics(),
               itemCount: previousContactDetails.length,
               itemBuilder:(context, index) {
                 return Container(
@@ -211,7 +214,6 @@ class _ContactInfoState extends State<ContactInfo> {
               )
                 );
               } 
-            )
           );
   }
 
