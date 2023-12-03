@@ -47,34 +47,47 @@ class _DashboardState extends State<Dashboard> {
           Profile(),
         ],
         ),
-      bottomNavigationBar: BottomNavigationBar(
-        type: BottomNavigationBarType.fixed,
-        items: const [
-          BottomNavigationBarItem(
-            icon: Icon(Icons.home),
-            label: 'Home',
+      bottomNavigationBar: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: ClipRRect(
+            borderRadius: BorderRadius.only(
+            topLeft: Radius.circular(15.0),
+            topRight: Radius.circular(15.0),
+            bottomLeft:Radius.circular(15.0),
+            bottomRight:Radius.circular(15.0),
           ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.calendar_month_outlined),
-            label: 'Bookings',
+        child: BottomNavigationBar(
+          type: BottomNavigationBarType.fixed,
+      
+          items: const [
+            BottomNavigationBarItem(
+              icon: Icon(Icons.home_outlined),
+              label: 'Home',
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.calendar_month_outlined),
+              label: 'Bookings',
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.mail_outline),
+              label: 'Results'
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.person_2_outlined),
+              label: 'Profile',
+            ),
+          ],
+          currentIndex: _selectedIndex,
+          backgroundColor: ElabColors.greyColor2,
+          onTap: _onItemTapped,
+          iconSize: 25,
+          showUnselectedLabels: true,
+          selectedItemColor: ElabColors.primaryColor,
+          unselectedItemColor: ElabColors.secondaryColor,
+          
+          
+        )
           ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.mail_outline),
-            label: 'Results'
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.person),
-            label: 'Profile',
-          ),
-        ],
-        currentIndex: _selectedIndex,
-        backgroundColor: ElabColors.greyColor2,
-        onTap: _onItemTapped,
-        iconSize: 25,
-        showUnselectedLabels: true,
-        selectedItemColor: ElabColors.primaryColor,
-        unselectedItemColor: ElabColors.secondaryColor,
-        
       )
     );
   }

@@ -63,18 +63,18 @@ class _LabsState extends State<Labs> {
   }
 
   Color getRandomColor() {
-  final List<Color> colorSet = [
-    ElabColors.primaryColor.withOpacity(0.5),
-    Color.fromARGB(255, 235, 16, 16).withOpacity(0.5),
-    Color.fromARGB(255, 93, 235, 16).withOpacity(0.5),
-    Color.fromARGB(255, 16, 235, 213).withOpacity(0.5),
-    Color.fromARGB(255, 203, 209, 13).withOpacity(0.5),
-    Color.fromARGB(255, 154, 12, 186).withOpacity(0.5),  
-  ];
+    final List<Color> colorSet = [
+      ElabColors.primaryColor.withOpacity(0.5),
+      Color.fromARGB(255, 235, 16, 16).withOpacity(0.5),
+      Color.fromARGB(255, 60, 160, 5).withOpacity(0.5),
+      Color.fromARGB(255, 13, 193, 175).withOpacity(0.5),
+      Color.fromARGB(255, 192, 198, 10).withOpacity(0.5),
+      Color.fromARGB(255, 154, 12, 186).withOpacity(0.5),
+    ];
 
-  final random = Random();
-  return colorSet[random.nextInt(colorSet.length)];
-}
+    final random = Random();
+    return colorSet[random.nextInt(colorSet.length)];
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -115,11 +115,18 @@ class _LabsState extends State<Labs> {
             itemBuilder: (context, index) {
               return Container(
                   margin: const EdgeInsets.fromLTRB(10, 8, 10, 5),
-                  decoration: const BoxDecoration(
+                  decoration: BoxDecoration(
                       color: Colors.white,
-                      border: Border(
-                          top: BorderSide(
-                              color: ElabColors.color3, width: 1.0))),
+                      borderRadius: BorderRadius.all(Radius.circular(10)),
+                      boxShadow: [
+                      BoxShadow(
+                        color: Colors.grey.withOpacity(0.5),
+                        spreadRadius: 2,
+                        blurRadius: 4,
+                        offset: Offset(0, 2), // changes position of shadow
+                      ),
+                    ],
+                    ),
                   child: GestureDetector(
                     onTap: () {
                       Navigator.pushNamed(context, '/tests', arguments: {
@@ -138,27 +145,39 @@ class _LabsState extends State<Labs> {
                             Row(
                               mainAxisAlignment: MainAxisAlignment.start,
                               children: [
-                                Container(
-                                  decoration: BoxDecoration(
-                                    color:getRandomColor(),
-                                    borderRadius: BorderRadius.circular(
-                                        50.0), // Set the border radius to make it rounded
-                                  ),
-                                  padding: EdgeInsets.all(
-                                      10.0), // Add padding to the container if needed
-                                  child: Icon(
-                                    Icons.biotech_rounded,
-                                    color: Colors.black,
-                                    size: 30,
+                                Padding(
+                                  padding: const EdgeInsets.fromLTRB(8,0,0,0),
+                                  child: Container(
+                                    height: 45,
+                                    width: 45,
+                                    decoration: BoxDecoration(
+                                      color: getRandomColor(),
+                                      borderRadius: BorderRadius.circular(
+                                          25.0), // Set the border radius to make it rounded
+                                    ),
+                                    child: Center(
+                                      child: Text(
+                                        labs[index]['labname'][0].toString(),
+                                        style: TextStyle(
+                                          fontFamily: GoogleFonts.hammersmithOne()
+                                              .fontFamily,
+                                          fontSize: 20,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                    ),
                                   ),
                                 ),
-                                const SizedBox(width:8,),
-                                Flexible(child: Text(
-                                  labs[index]['labname'],
-                                  style: const TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 18),
+                                const SizedBox(
+                                  width: 8,
                                 ),
+                                Flexible(
+                                  child: Text(
+                                    labs[index]['labname'],
+                                    style: const TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 18),
+                                  ),
                                 )
                               ],
                             ),
@@ -217,30 +236,35 @@ class _LabsState extends State<Labs> {
                             ),
                           ],
                         ),
-                        trailing: Container(
-                          decoration: const BoxDecoration(
-                              color: ElabColors.greyColor2,
-                              shape: BoxShape.rectangle,
-                              borderRadius:
-                                  BorderRadius.all(Radius.circular(10))),
-                          child: Padding(
-                            padding: const EdgeInsets.all(5.0),
-                            child: GestureDetector(
-                              onTap: () {
-                                Navigator.pushNamed(context, '/tests',
-                                    arguments: {
-                                      'labId': labs[index]['id'],
-                                      'labName': labs[index]['labname'],
-                                      'opentime': labs[index]['opentime'],
-                                      'closetime': labs[index]['closetime']
-                                    });
-                              },
-                              child: const Icon(
-                                  Icons.keyboard_arrow_right_outlined,
-                                  size: 25,
-                                  color: Colors.black),
+                        trailing: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Container(
+                              decoration: const BoxDecoration(
+                                  color: ElabColors.greyColor2,
+                                  shape: BoxShape.rectangle,
+                                  borderRadius:
+                                      BorderRadius.all(Radius.circular(10))),
+                              child: Padding(
+                                padding: const EdgeInsets.all(5.0),
+                                child: GestureDetector(
+                                  onTap: () {
+                                    Navigator.pushNamed(context, '/tests',
+                                        arguments: {
+                                          'labId': labs[index]['id'],
+                                          'labName': labs[index]['labname'],
+                                          'opentime': labs[index]['opentime'],
+                                          'closetime': labs[index]['closetime']
+                                        });
+                                  },
+                                  child: const Icon(
+                                      Icons.keyboard_arrow_right_outlined,
+                                      size: 25,
+                                      color: Colors.black),
+                                ),
+                              ),
                             ),
-                          ),
+                          ],
                         )),
                   ));
             }));
