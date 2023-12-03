@@ -111,10 +111,26 @@ class _RegisterState extends State<Register> {
     });
     final supabase = Supabase.instance.client;
     try{
+      try{
        await supabase.auth.signUp(
         email: emailController.text.trim(),
         password: passwordController.text.trim(),
       );
+      }catch(e){
+        Fluttertoast.showToast(
+          msg: "Email already exists",
+          toastLength: Toast.LENGTH_LONG,
+          gravity: ToastGravity.TOP,
+          timeInSecForIosWeb: 2,
+          backgroundColor: ElabColors.greyColor,
+          textColor: Colors.white,
+          fontSize: 16.0
+        );
+        setState(() {
+          isLoading = false;
+        });
+        throw Exception();
+      }
       
       await supabase.auth.signInWithPassword(
         email: emailController.text.trim(),

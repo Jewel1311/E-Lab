@@ -50,6 +50,7 @@ class _ContactInfoState extends State<ContactInfo> {
     addressController.dispose();
     phoneController.dispose();
     landMarkController.dispose();
+    mapController.dispose();
     super.dispose();
   }
 
