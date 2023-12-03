@@ -27,7 +27,11 @@ class _ContactInfoState extends State<ContactInfo> {
   TextEditingController phoneController = TextEditingController();
   TextEditingController landMarkController = TextEditingController();
 
+  MapController mapController = MapController();
+
   LatLng markerLatLng = LatLng(0, 0);
+  dynamic initialLatitude  = 9.580;
+  dynamic initialLongitude = 76.803;
 
   @override
   void initState() {
@@ -180,14 +184,15 @@ class _ContactInfoState extends State<ContactInfo> {
         width: double.infinity,
         height: 400,
         child: FlutterMap(
-          mapController: MapController(),
+          mapController: mapController,
           options: MapOptions(
               onTap: (tapPosition, point) {
                 setState(() {
                   markerLatLng = point;
                 });
               },
-              initialCenter: LatLng(9.580, 76.803),
+              initialCenter: LatLng(initialLatitude, initialLongitude),
+              
               initialZoom: 9.2),
           children: [
             TileLayer(
@@ -328,6 +333,7 @@ class _ContactInfoState extends State<ContactInfo> {
                             previousContactDetails[index]['landmark'];
                         markerLatLng = LatLng(previousContactDetails[index]['latitude'],previousContactDetails[index]['longitude']);
                         
+                        mapController.move(markerLatLng, 9.2);
                       });
                     },
                   ),
