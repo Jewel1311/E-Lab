@@ -88,6 +88,8 @@ class _ConfirmBookingState extends State<ConfirmBooking> {
           'address': testsMap['contactDetails']['address'],
           'phone' : testsMap['contactDetails']['phone'],
           'landmark': testsMap['contactDetails']['landmark'],
+          'latitude':testsMap['contactDetails']['latitude'],
+          'longitude':testsMap['contactDetails']['longitude'],
           'user_id': supabase.auth.currentUser!.id
       }).select();
 

@@ -159,9 +159,9 @@ class _LabsState extends State<Labs> {
                                       child: Text(
                                         labs[index]['labname'][0].toString(),
                                         style: TextStyle(
-                                          fontFamily: GoogleFonts.hammersmithOne()
+                                          fontFamily: GoogleFonts.outfit()
                                               .fontFamily,
-                                          fontSize: 20,
+                                          fontSize: 22,
                                           fontWeight: FontWeight.bold,
                                         ),
                                       ),

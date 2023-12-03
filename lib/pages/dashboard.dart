@@ -48,7 +48,7 @@ class _DashboardState extends State<Dashboard> {
         ],
         ),
       bottomNavigationBar: Padding(
-        padding: const EdgeInsets.all(8.0),
+        padding: const EdgeInsets.fromLTRB(8,8,8,10),
         child: ClipRRect(
             borderRadius: BorderRadius.only(
             topLeft: Radius.circular(15.0),
