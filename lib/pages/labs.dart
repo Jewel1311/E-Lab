@@ -3,7 +3,10 @@ import 'dart:math';
 import 'package:elab/style/colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:longitude_and_latitude_calculator/longitude_and_latitude_calculator.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:intl/intl.dart';
 
@@ -19,6 +22,8 @@ class _LabsState extends State<Labs> {
   dynamic labs;
   bool isLoading = false;
   dynamic city;
+  double EarthRadiusMeters = 6371000.0;
+  dynamic currentLocation;
 
   final TextEditingController searchController = TextEditingController();
 
@@ -60,6 +65,73 @@ class _LabsState extends State<Labs> {
     setState(() {
       isLoading = false;
     });
+  }
+
+  Future determinePosition() async {
+    bool serviceEnabled;
+    LocationPermission permission;
+
+    // Test if location services are enabled.
+    serviceEnabled = await Geolocator.isLocationServiceEnabled();
+    if (!serviceEnabled) {
+      serviceEnabled = await Geolocator.openLocationSettings();
+      return;
+    }
+
+    permission = await Geolocator.checkPermission();
+    if (permission == LocationPermission.denied) {
+      permission = await Geolocator.requestPermission();
+      if (permission == LocationPermission.denied) {
+        Fluttertoast.showToast(
+            msg: "Location permission is required",
+            toastLength: Toast.LENGTH_LONG,
+            gravity: ToastGravity.TOP,
+            timeInSecForIosWeb: 2,
+            backgroundColor: ElabColors.greyColor,
+            textColor: Colors.white,
+            fontSize: 16.0);
+      }
+      return;
+    }
+
+    if (permission == LocationPermission.deniedForever) {
+      Fluttertoast.showToast(
+          msg: "Location permission is required",
+          toastLength: Toast.LENGTH_LONG,
+          gravity: ToastGravity.TOP,
+          timeInSecForIosWeb: 2,
+          backgroundColor: ElabColors.greyColor,
+          textColor: Colors.white,
+          fontSize: 16.0);
+      return;
+    }
+    setState(() {
+      isLoading = true;
+    });
+
+    currentLocation = await Geolocator.getCurrentPosition();
+    getNearbyLabs();
+  }
+
+  Future getNearbyLabs() async {
+    labs = [];
+    var lonAndLatDistance = LonAndLatDistance();
+    final allLabs = await supabase.from('labs').select();
+    for (dynamic lab in allLabs) {
+      dynamic distance = lonAndLatDistance.lonAndLatDistance(
+          lat1: currentLocation.latitude,
+          lon1: currentLocation.longitude,
+          lat2: lab['latitude'],
+          lon2: lab['longitude'],
+          km: true);
+      if (distance < 10) {
+        labs.add(lab);
+      }
+      setState(() {
+        isLoading = false;
+      });
+    }
+    print(labs);
   }
 
   Color getRandomColor() {
@@ -116,9 +188,9 @@ class _LabsState extends State<Labs> {
               return Container(
                   margin: const EdgeInsets.fromLTRB(10, 8, 10, 5),
                   decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.all(Radius.circular(10)),
-                      boxShadow: [
+                    color: Colors.white,
+                    borderRadius: BorderRadius.all(Radius.circular(10)),
+                    boxShadow: [
                       BoxShadow(
                         color: Colors.grey.withOpacity(0.5),
                         spreadRadius: 2,
@@ -126,7 +198,7 @@ class _LabsState extends State<Labs> {
                         offset: Offset(0, 2), // changes position of shadow
                       ),
                     ],
-                    ),
+                  ),
                   child: GestureDetector(
                     onTap: () {
                       Navigator.pushNamed(context, '/tests', arguments: {
@@ -146,7 +218,8 @@ class _LabsState extends State<Labs> {
                               mainAxisAlignment: MainAxisAlignment.start,
                               children: [
                                 Padding(
-                                  padding: const EdgeInsets.fromLTRB(8,0,0,0),
+                                  padding:
+                                      const EdgeInsets.fromLTRB(8, 0, 0, 0),
                                   child: Container(
                                     height: 45,
                                     width: 45,
@@ -159,8 +232,8 @@ class _LabsState extends State<Labs> {
                                       child: Text(
                                         labs[index]['labname'][0].toString(),
                                         style: TextStyle(
-                                          fontFamily: GoogleFonts.outfit()
-                                              .fontFamily,
+                                          fontFamily:
+                                              GoogleFonts.outfit().fontFamily,
                                           fontSize: 22,
                                           fontWeight: FontWeight.bold,
                                         ),
@@ -302,18 +375,34 @@ class _LabsState extends State<Labs> {
         Padding(
           padding: const EdgeInsets.fromLTRB(15, 15, 0, 10),
           child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text(
-                "Labs near you",
-                style: TextStyle(
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold,
-                    fontFamily: GoogleFonts.poppins().fontFamily),
-              ),
-              const Icon(
+              Row(
+                children: [
+                  Text(
+                    "Labs near you",
+                    style: TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                        fontFamily: GoogleFonts.poppins().fontFamily),
+                  ),
+                  const Icon(
                 Icons.location_on_outlined,
                 size: 25,
-                color: ElabColors.primaryColor,
+                color: ElabColors.secondaryColor,
+              ),
+                ],
+              ),
+              
+              
+              Padding(
+                padding: const EdgeInsets.fromLTRB(0,0,15,0),
+                child: ElevatedButton(
+                    style: ButtonStyle(backgroundColor: MaterialStatePropertyAll(ElabColors.primaryColor)),
+                    onPressed: () {
+                      determinePosition();
+                    },
+                    child: Text('Find',style: TextStyle(fontFamily: GoogleFonts.poppins().fontFamily, fontWeight: FontWeight.bold),)),
               )
             ],
           ),
