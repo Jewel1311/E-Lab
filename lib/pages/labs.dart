@@ -131,7 +131,6 @@ class _LabsState extends State<Labs> {
         isLoading = false;
       });
     }
-    print(labs);
   }
 
   Color getRandomColor() {
