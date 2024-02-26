@@ -33,14 +33,16 @@ class Home extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               SizedBox(
-                width: 100,
+                width: 120,
                 child: ElevatedButton( onPressed: () {
                    Navigator.pushNamed(context, '/register');
                 } ,
                 style:const ButtonStyle(
                   backgroundColor:  MaterialStatePropertyAll(ElabColors.greyColor2),
+                  shape: MaterialStatePropertyAll(RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(8)))),
                   
                 ) ,
+              
                   child:Text('Register',
                     style: TextStyle(
                       fontSize: 15,
@@ -53,12 +55,13 @@ class Home extends StatelessWidget {
               ),
               const SizedBox(width: 20,),
               SizedBox(
-                width: 100,
+                width: 120,
                 child: ElevatedButton( onPressed: () {
                    Navigator.pushNamed(context, '/login');
                 } ,
                 style:const ButtonStyle(
                   backgroundColor:  MaterialStatePropertyAll(ElabColors.greyColor2),
+                   shape: MaterialStatePropertyAll(RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(8)))),
                   
                 ) ,
                   child:Text('Log In',

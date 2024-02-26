@@ -20,8 +20,6 @@ class _TestsState extends State<Tests> {
   Set selectedItems = {};
   List selectedItemsList = [];
   dynamic price = 0;
-  String opentime = '';
-  String closetime = '';
   int labId = 0;
 
   @override
@@ -29,8 +27,6 @@ class _TestsState extends State<Tests> {
     super.initState();
     Future.delayed(Duration.zero, () {
       labDetails = ModalRoute.of(context)?.settings.arguments as Map?;
-      opentime = labDetails['opentime'];
-      closetime = labDetails['closetime'];
       labId = labDetails['labId'];
       getTests();
     });
@@ -73,6 +69,7 @@ class _TestsState extends State<Tests> {
       null
     );
   }
+
 
   
 
@@ -164,15 +161,22 @@ class _TestsState extends State<Tests> {
             padding: const EdgeInsets.fromLTRB(8,8,15,8),
             child: ElevatedButton(
               onPressed: () {
-                Navigator.pushNamed(context, '/timeslot',arguments: {'tests':selectedItemsList, 'price':price, 'opentime':opentime, 'closetime':closetime,'labId':labId});
+                Navigator.pushNamed(context, '/timeslot',
+                arguments: {
+                  'tests':selectedItemsList, 
+                  'price':price, 
+                  'labId':labId,
+                  'labName': labDetails['labName']
+                  });
               },
               style: ButtonStyle(
                 backgroundColor: const MaterialStatePropertyAll(ElabColors.primaryColor),
                 fixedSize: MaterialStateProperty.all(
                   const Size(100, 40), 
                 ),
+                shape: MaterialStatePropertyAll(RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)))
                   ),
-              child: const Text('Next',),
+              child: const Text('Next', style: TextStyle(color: Colors.white),),
             ),
           ),
         ],

@@ -151,7 +151,9 @@ class _LabsState extends State<Labs> {
   Widget build(BuildContext context) {
     return Container(
       color: Colors.white,
-      child: Padding(
+      child: RefreshIndicator(
+        onRefresh: getLabs,
+        child: Padding(
         padding: const EdgeInsets.all(0.0),
         child: isLoading
             ? const SpinKitFadingCircle(
@@ -163,6 +165,7 @@ class _LabsState extends State<Labs> {
                   labs.length > 0 ? labList() : noLabsFound(),
                 ],
               ),
+      ),
       ),
     );
   }
@@ -200,11 +203,9 @@ class _LabsState extends State<Labs> {
                   ),
                   child: GestureDetector(
                     onTap: () {
-                      Navigator.pushNamed(context, '/tests', arguments: {
+                      Navigator.pushNamed(context, '/labdetails', arguments: {
                         'labId': labs[index]['id'],
                         'labName': labs[index]['labname'],
-                        'opentime': labs[index]['opentime'],
-                        'closetime': labs[index]['closetime']
                       });
                     },
                     child: ListTile(
@@ -321,13 +322,10 @@ class _LabsState extends State<Labs> {
                                 padding: const EdgeInsets.all(5.0),
                                 child: GestureDetector(
                                   onTap: () {
-                                    Navigator.pushNamed(context, '/tests',
-                                        arguments: {
-                                          'labId': labs[index]['id'],
-                                          'labName': labs[index]['labname'],
-                                          'opentime': labs[index]['opentime'],
-                                          'closetime': labs[index]['closetime']
-                                        });
+                                   Navigator.pushNamed(context, '/labdetails', arguments: {
+                                    'labId': labs[index]['id'],
+                                    'labName': labs[index]['labname'],
+                                  });
                                   },
                                   child: const Icon(
                                       Icons.keyboard_arrow_right_outlined,
@@ -397,11 +395,12 @@ class _LabsState extends State<Labs> {
               Padding(
                 padding: const EdgeInsets.fromLTRB(0,0,15,0),
                 child: ElevatedButton(
-                    style: ButtonStyle(backgroundColor: MaterialStatePropertyAll(ElabColors.primaryColor)),
+                    style: ButtonStyle(backgroundColor: MaterialStatePropertyAll(ElabColors.primaryColor),shape: MaterialStatePropertyAll(RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)))),
+                    
                     onPressed: () {
                       determinePosition();
                     },
-                    child: Text('Find',style: TextStyle(fontFamily: GoogleFonts.poppins().fontFamily, fontWeight: FontWeight.bold),)),
+                    child: Text('Find',style: TextStyle(fontFamily: GoogleFonts.poppins().fontFamily, fontWeight: FontWeight.bold, color: Colors.white),)),
               )
             ],
           ),

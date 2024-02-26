@@ -3,6 +3,7 @@ import 'package:elab/pages/confirmbooking.dart';
 import 'package:elab/pages/contactinfo.dart';
 import 'package:elab/pages/dashboard.dart';
 import 'package:elab/pages/home.dart';
+import 'package:elab/pages/labdetails.dart';
 import 'package:elab/pages/login.dart';
 import 'package:elab/pages/patientdetails.dart';
 import 'package:elab/pages/register.dart';
@@ -44,6 +45,7 @@ class Elab extends StatelessWidget {
         '/confirmbooking' :(context) => const ConfirmBooking(),
         '/bookingdetails' :(context) => const BookingDetails(),
         '/viewresults' : (context) => const ViewResults(),
+        '/labdetails':(context) => const LabDetails(),
       },
     );
   }
