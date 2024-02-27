@@ -158,6 +158,7 @@ class _LoginState extends State<Login> {
                 ),   
                 child: Text('Log In', 
                 style: TextStyle(
+                  color: Colors.white,
                   fontSize: 16,
                   fontFamily: GoogleFonts.poppins().fontFamily
                 )

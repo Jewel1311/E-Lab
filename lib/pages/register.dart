@@ -243,6 +243,7 @@ class _RegisterState extends State<Register> {
                 ),
                 child: Text('Create',
                     style: TextStyle(
+                        color: Colors.white,
                         fontSize: 16,
                         fontFamily: GoogleFonts.poppins().fontFamily))),
           ),
