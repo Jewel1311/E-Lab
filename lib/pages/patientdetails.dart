@@ -69,14 +69,26 @@ class _PatientDetailsState extends State<PatientDetails> {
         'id':selectedPatient
       };
 
+    //if booking done by uploading prescription
+      if(testsMap['identifier'] == 'prescription'){
+
+         Navigator.pushNamed(context, '/contactinfo', arguments: {
+          'identifier':testsMap['identifier'],
+          'image':testsMap['image'],
+          'labId':testsMap['labId'],
+          'patientDetails': patientDetials
+        });
+      }
+    //if booking done by selecting tests
+    else{
       Navigator.pushNamed(context, '/contactinfo', arguments: {
+        'identifier':testsMap['identifier'],
         'tests':testsMap['tests'],
         'price':testsMap['price'],
         'labId':testsMap['labId'],
-        'time': testsMap['time'],
-        'date': testsMap['date'],
         'patientDetails': patientDetials
       });
+    }
       
     }
   }
@@ -266,8 +278,9 @@ Material bottomNavBar() {
                 fixedSize: MaterialStateProperty.all(
                   const Size(100, 40), 
                 ),
+                shape: MaterialStatePropertyAll(RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)))
                   ),
-              child: const Text('Next',),
+              child: const Text('Next',style: TextStyle(color: Colors.white),),
             ),
           ),
         ],

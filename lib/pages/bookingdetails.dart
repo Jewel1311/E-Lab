@@ -78,12 +78,6 @@ class _BookingDetailsState extends State<BookingDetails> {
     return formattedTime;
   }
 
-  String convert24HourTo12Hour(String time24) {
-    DateTime dateTime = DateFormat('HH:mm').parse(time24);
-    String time12 = DateFormat('h:mm a').format(dateTime);
-    return time12;
-  }
-
   String formatToCustomFormat(String inputDate) {
     DateTime dateTime = DateFormat('yyyy-MM-dd').parse(inputDate);
     String formattedDate = DateFormat('dd MMM yyyy').format(dateTime);
@@ -295,16 +289,6 @@ class _BookingDetailsState extends State<BookingDetails> {
               ),
             ),
             const SizedBox(
-              height: 10,
-            ),
-            Text(
-              "${convert24HourTo12Hour(bookingDetails[0]['timeslot'])} - ${addOneHourToCurrentTime(convert24HourTo12Hour(bookingDetails[0]['timeslot']))}",
-              style: const TextStyle(
-                fontWeight: FontWeight.bold,
-                fontSize: 16,
-              ),
-            ),
-            const SizedBox(
               height: 20,
             ),
             const Text(
@@ -419,11 +403,13 @@ class _BookingDetailsState extends State<BookingDetails> {
                   fixedSize: MaterialStateProperty.all(
                     const Size(150, 40),
                   ),
+                   shape: MaterialStatePropertyAll(RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)))
                 ),
                 child: Text('Cancel Booking',
                     style: TextStyle(
                       fontFamily: GoogleFonts.poppins().fontFamily,
                       fontWeight: FontWeight.bold,
+                      color: Colors.white
                     )),
               ),
             ),

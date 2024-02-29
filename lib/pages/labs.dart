@@ -210,7 +210,7 @@ class _LabsState extends State<Labs> {
                     },
                     child: ListTile(
                         contentPadding: const EdgeInsets.symmetric(
-                            vertical: 10, horizontal: 5),
+                            vertical: 8, horizontal: 5),
                         title: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
@@ -221,8 +221,8 @@ class _LabsState extends State<Labs> {
                                   padding:
                                       const EdgeInsets.fromLTRB(8, 0, 0, 0),
                                   child: Container(
-                                    height: 45,
-                                    width: 45,
+                                    height: 40,
+                                    width: 40,
                                     decoration: BoxDecoration(
                                       color: getRandomColor(),
                                       borderRadius: BorderRadius.circular(
@@ -234,7 +234,7 @@ class _LabsState extends State<Labs> {
                                         style: TextStyle(
                                           fontFamily:
                                               GoogleFonts.outfit().fontFamily,
-                                          fontSize: 22,
+                                          fontSize: 18,
                                           fontWeight: FontWeight.bold,
                                         ),
                                       ),
@@ -255,7 +255,7 @@ class _LabsState extends State<Labs> {
                               ],
                             ),
                             const SizedBox(
-                              height: 10,
+                              height: 8,
                             ),
                             Padding(
                               padding: const EdgeInsets.fromLTRB(5, 0, 0, 0),
@@ -271,7 +271,7 @@ class _LabsState extends State<Labs> {
                               ),
                             ),
                             const SizedBox(
-                              height: 10,
+                              height: 8,
                             ),
                             Padding(
                               padding: const EdgeInsets.fromLTRB(5, 0, 0, 0),
@@ -370,7 +370,7 @@ class _LabsState extends State<Labs> {
           ),
         ),
         Padding(
-          padding: const EdgeInsets.fromLTRB(15, 15, 0, 10),
+          padding: const EdgeInsets.fromLTRB(15, 10, 0, 10),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
@@ -379,7 +379,7 @@ class _LabsState extends State<Labs> {
                   Text(
                     "Labs near you",
                     style: TextStyle(
-                        fontSize: 20,
+                        fontSize: 16,
                         fontWeight: FontWeight.bold,
                         fontFamily: GoogleFonts.poppins().fontFamily),
                   ),

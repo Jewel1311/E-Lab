@@ -58,13 +58,6 @@ class _ShowBookingsState extends State<ShowBookings> {
     return formattedDate;
   }
 
-String convert24HourTo12Hour(String time24) {
-  DateTime dateTime = DateFormat('HH:mm').parse(time24);
-  String time12 = DateFormat('h:mm a').format(dateTime);
-  return time12;
-}
-
-
   @override
   Widget build(BuildContext context) {
     return isLoading?const Center(child: Text("Loading...", style: TextStyle(
@@ -113,21 +106,21 @@ String convert24HourTo12Hour(String time24) {
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                         children:[
+                        Text(booking[index]['lab_name'], style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),),
+                        const SizedBox(height: 5,),
                         Row(
                           children: [
                             Text(formatToCustomFormat( booking[index]['date'].toString()),
-                                    style: const TextStyle( fontWeight: FontWeight.bold, fontSize: 16) ,
+                                    style: const TextStyle(fontSize: 16) ,
                                     ),
-                            const Text(" | ", style: TextStyle(fontSize: 18,fontWeight: FontWeight.bold),),
 
-                            Text(convert24HourTo12Hour(booking[index]['timeslot'].toString()), style: const TextStyle(fontSize: 16),)
                           ],
                         ),
-                        const SizedBox(height: 10,),
+                        const SizedBox(height: 5,),
                         Text("${booking[index]['tests'].length} tests booked", style: const TextStyle(
-                          fontSize: 15, fontWeight: FontWeight.bold,
+                          fontSize: 15,
                         ),),
-                        const SizedBox(height: 10,),
+                        const SizedBox(height: 5,),
                         Row(
                           children: [
                             const Text('status: '),

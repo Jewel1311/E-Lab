@@ -88,15 +88,27 @@ class _ContactInfoState extends State<ContactInfo> {
         'id': selectedContact
       };
 
-      Navigator.pushNamed(context, '/confirmbooking', arguments: {
+      if(testsMap['identifier'] == 'prescription'){
+
+        Navigator.pushNamed(context, '/confirmbooking', arguments: {
+          'identifier':testsMap['identifier'],
+          'image':testsMap['image'],
+          'labId': testsMap['labId'],
+          'patientDetails': testsMap['patientDetails'],
+          'contactDetails': contactDetails
+        });
+      }
+      else{
+        Navigator.pushNamed(context, '/confirmbooking', arguments: {
+        'identifier':testsMap['identifier'],
         'tests': testsMap['tests'],
         'price': testsMap['price'],
         'labId': testsMap['labId'],
-        'time': testsMap['time'],
-        'date': testsMap['date'],
         'patientDetails': testsMap['patientDetails'],
         'contactDetails': contactDetails
       });
+      }
+      
     }
   }
 
@@ -361,9 +373,10 @@ class _ContactInfoState extends State<ContactInfo> {
                   fixedSize: MaterialStateProperty.all(
                     const Size(100, 40),
                   ),
+                  shape: MaterialStatePropertyAll(RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)))
                 ),
                 child: const Text(
-                  'Next',
+                  'Next', style: TextStyle(color: Colors.white),
                 ),
               ),
             ),

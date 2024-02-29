@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'dart:math';
 
 import 'package:elab/style/colors.dart';
@@ -5,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 class LabDetails extends StatefulWidget {
@@ -27,6 +29,9 @@ class _LabDetailsState extends State<LabDetails> {
   dynamic avgRating = 0;
 
   final TextEditingController reviewController = TextEditingController();
+
+  final ImagePicker imagePicker = ImagePicker();
+  dynamic imageFile;
 
   @override
   void initState() {
@@ -77,6 +82,9 @@ class _LabDetailsState extends State<LabDetails> {
   }
 
   Future addRating() async{
+    if(stars == null || stars == 0){
+      return;
+    }
     setState(() {
       isReviewing = true;
     });
@@ -99,6 +107,20 @@ class _LabDetailsState extends State<LabDetails> {
       .match({'id':labDetails['labId']});
     reviewController.text='';
     getReviewDetails();
+  }
+
+  Future uploadImage() async {
+    final pickedImage =
+        await imagePicker.pickImage(source: ImageSource.gallery);
+    if (pickedImage != null) {
+      final imagePath = pickedImage.path;
+      setState(() {
+        imageFile = File(imagePath);
+      });
+      if (imageFile != null) {            
+          showImage(context);
+      }
+    }
   }
 
   @override
@@ -156,7 +178,11 @@ class _LabDetailsState extends State<LabDetails> {
                 flex: 1,
                 child: Column(
                   children: [
-                    Container(               
+                    GestureDetector(
+                        onTap: () {
+                          uploadImage();
+                        }, 
+                      child:Container(               
                       padding: EdgeInsets.fromLTRB(0, 3, 0, 3),
                       width: double.infinity,
                       margin: const EdgeInsets.all(10),
@@ -172,11 +198,12 @@ class _LabDetailsState extends State<LabDetails> {
                       ),
                   ],
                   ),
-                      child: Column(
+                      child:Column(
                         children: [
                           Icon(Icons.upload_file_outlined, size:30,color: ElabColors.primaryColor,),
                           Text('Upload Prescription')
                         ],
+                      )
                       )
                     )
                   ],
@@ -250,6 +277,7 @@ class _LabDetailsState extends State<LabDetails> {
                   RatingBar.builder(
                     initialRating: 0,
                     direction: Axis.horizontal,
+                    itemSize: 30,
                     itemBuilder: (context, _)=>Icon(Icons.star, color: Colors.amber,), 
                     onRatingUpdate: (rating)=>{
                       stars = rating
@@ -270,7 +298,7 @@ class _LabDetailsState extends State<LabDetails> {
               ),
               Row(
               children: [
-                Text(avgRating.toDouble().toStringAsFixed(1),style: TextStyle(fontWeight: FontWeight.bold, fontSize: 40),),
+                Text(avgRating.toDouble().toStringAsFixed(1),style: TextStyle(fontWeight: FontWeight.bold, fontSize: 35),),
                 Text(" ("+lab[0]['rating_count'].toString()+ " ratings)")
             ],
           ),
@@ -348,6 +376,49 @@ class _LabDetailsState extends State<LabDetails> {
             child: Text("No reviews yet"))
         ],
       ),
+    );
+  }
+
+  void showImage(BuildContext context) {
+    showDialog(
+      context: context,
+      barrierDismissible: false, // Prevents closing the dialog by tapping outside
+      builder: (BuildContext context) {
+        return AlertDialog(
+          content:  Image.file(
+                  File(imageFile!.path),
+                  height: 300,
+                  width: 200,
+                  fit: BoxFit.cover,
+                ),
+          actions: [
+            TextButton(
+                onPressed: () {
+                  Navigator.pop(context, 'Cancel');
+                },
+                child: Text('Cancel'),
+              ),
+            ElevatedButton(
+              onPressed: () {
+                Navigator.pushNamed(context, '/patientdetails',
+                arguments: {
+                  'identifier': 'prescription',
+                  'labId':labDetails['labId'],
+                  'image':imageFile
+                  });
+              },
+              style:ButtonStyle(
+                backgroundColor: const MaterialStatePropertyAll(ElabColors.primaryColor),
+                fixedSize: MaterialStateProperty.all(
+                  const Size(100, 40), 
+                ),
+                shape: MaterialStatePropertyAll(RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)))
+                  ),
+              child: const Text('Next', style: TextStyle(color: Colors.white),),
+            ),
+          ],
+        );
+      },
     );
   }
 }

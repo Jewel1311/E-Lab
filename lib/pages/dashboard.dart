@@ -33,6 +33,7 @@ class _DashboardState extends State<Dashboard> {
       appBar: AppBar(
         elevation: 0,
         backgroundColor: Colors.white,
+        surfaceTintColor: Colors.white,
         title: Text('Welcome to E-lab',
           style: TextStyle(fontFamily: GoogleFonts.hammersmithOne().fontFamily,color: Colors.black, fontWeight: FontWeight.bold, fontSize: 22),
         ),

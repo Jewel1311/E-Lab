@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:elab/style/colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
@@ -24,13 +26,16 @@ class _ConfirmBookingState extends State<ConfirmBooking> {
   bool isLoading = false;
   List testDetails = [];
   String payment = "pending";
-  bool isChecked = false;
+  String displayDate='';
+  String time='';
+  DateTime now = DateTime.now();
 
   @override
   void initState() {
     super.initState();
     setState(() {
       isLoading = true;
+      displayDate = DateFormat('dd-MMM-yyyy').format(now);
     });
     Future.delayed(Duration.zero, () {
       testsMap = ModalRoute.of(context)?.settings.arguments as Map?;
@@ -38,34 +43,37 @@ class _ConfirmBookingState extends State<ConfirmBooking> {
     });
   }
 
+  String convert24HourTo12Hour(String time24Hour) {
+    final inputFormat = DateFormat('HH:mm:ss');
+    final outputFormat = DateFormat('h:mm a');
+    final dateTime = inputFormat.parse(time24Hour);
+    final time12Hour = outputFormat.format(dateTime);
+    return time12Hour;
+  }
+
 
   Future getBookingDetails() async {
     labDetails = await supabase.from('labs').select().match({'id':testsMap['labId']});
-    for(int id in testsMap['tests']){
+
+    //for test booking only
+    if(testsMap['identifier'] == 'test'){
+      for(int id in testsMap['tests']){
       final testDetail = await supabase.from('tests').select().match({'id': id});
       testDetails.add(testDetail);
     }
+    }
+    
      setState(() {
       isLoading = false;
     });
   }
-
-  String addOneHourToCurrentTime(String currentTime) {
-    DateTime parsedTime = DateFormat('h:mm a').parse(currentTime);
-    DateTime newTime = parsedTime.add(const Duration(hours: 1));
-    String formattedTime = DateFormat('h:mm a').format(newTime);
-    return formattedTime;
-  }
-
 
 
   Future bookTest() async{
     setState(() {
       isLoading = true;
     });
-
-    DateTime inputDate = DateFormat("dd MMM yy").parse(testsMap['date']);
-    String formattedDate = DateFormat("yyyy-MM-dd").format(inputDate);
+    String formattedDate = DateFormat('yyyy-MM-dd').format(now);
 
 
 
@@ -97,12 +105,13 @@ class _ConfirmBookingState extends State<ConfirmBooking> {
 
       await supabase.from('booking').insert({
         'tests': testsMap['tests'],
-        'timeslot' : testsMap['time'],
         'date': formattedDate,
         'patient_id' : patientId,
         'contact_id': contactId,
         'lab_id': testsMap['labId'],
-        'pay_status': payment
+        'pay_status': payment,
+        'lab_name': labDetails[0]['labname'],
+        'time':'${now.hour}:${now.minute}:${now.second}'
       });
 
       Fluttertoast.showToast(
@@ -146,7 +155,15 @@ class _ConfirmBookingState extends State<ConfirmBooking> {
       ),
       body: isLoading? const SpinKitFadingCircle(color: ElabColors.primaryColor,) :
            SingleChildScrollView( child:
-             listBookingDetails(),
+             Column(
+               children: [
+                if(testsMap['identifier'] == 'test')
+                  listBookingDetails(),
+                if(testsMap['identifier'] == 'prescription')
+                  viewPrescription()
+                 
+               ],
+             ),
           ),
     
       bottomNavigationBar: isLoading ?null :bottomNavBar(), 
@@ -219,7 +236,7 @@ class _ConfirmBookingState extends State<ConfirmBooking> {
 
       
                 
-                const Text("Time Slot", style: TextStyle(color: ElabColors.greyColor, fontWeight: FontWeight.bold, fontSize: 16),),
+                const Text("Date and Time", style: TextStyle(color: ElabColors.greyColor, fontWeight: FontWeight.bold, fontSize: 16),),
                 const SizedBox(height: 10,),
                  Container(
                   width: double.infinity,
@@ -230,14 +247,9 @@ class _ConfirmBookingState extends State<ConfirmBooking> {
                   ),
                 ),
                 const SizedBox(height: 20,),
-                Text(testsMap['date'], style: const TextStyle(
+                Text(displayDate +"  "+ convert24HourTo12Hour("${now.hour}:${now.minute}:${now.second}"), style: const TextStyle(
                           fontWeight: FontWeight.bold, fontSize: 16,
                         ),),
-                const SizedBox(height: 10,),
-                Text(testsMap['time']+' - '+addOneHourToCurrentTime(testsMap['time']), style: const TextStyle(
-                          fontWeight: FontWeight.bold, fontSize: 16,
-                        ),),
-
                
                 const SizedBox(height: 20,),
 
@@ -289,45 +301,116 @@ class _ConfirmBookingState extends State<ConfirmBooking> {
     );
   }
 
+  Column viewPrescription(){
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+            Padding(
+              padding: const EdgeInsets.all(10.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+
+
+                  Text(labDetails[0]['labname'], style: const TextStyle(
+                    fontSize: 18, fontWeight: FontWeight.bold
+                    ),
+                  ),
+                  const SizedBox(height: 8,),
+                  Text(labDetails[0]['city'], style: const TextStyle(
+                    fontSize: 16,
+                    ),
+                  ),
+
+                const SizedBox(height: 10,),
+                Container(
+                  width: double.infinity,
+                  height: 1, // Adjust the height of the border line as needed
+                  decoration: BoxDecoration(
+                    color: ElabColors.greyColor2, // Color of the border line
+                    borderRadius: BorderRadius.circular(2), // Adjust the radius as needed
+                  ),
+                ),
+                const SizedBox(height: 10,),
+                Image.file(
+                  File(testsMap['image']!.path),
+                  height: 300,
+                  width: 200,
+                  fit: BoxFit.cover,
+                ),
+                const SizedBox(height: 10,),
+                 const Text("Date and Time", style: TextStyle(color: ElabColors.greyColor, fontWeight: FontWeight.bold, fontSize: 16),),
+                const SizedBox(height: 10,),
+                 Container(
+                  width: double.infinity,
+                  height: 1, // Adjust the height of the border line as needed
+                  decoration: BoxDecoration(
+                    color: ElabColors.greyColor2, // Color of the border line
+                    borderRadius: BorderRadius.circular(2), // Adjust the radius as needed
+                  ),
+                ),
+                const SizedBox(height: 20,),
+                Text(displayDate +"  "+ convert24HourTo12Hour("${now.hour}:${now.minute}:${now.second}"), style: const TextStyle(
+                          fontWeight: FontWeight.bold, fontSize: 16,
+                        ),),
+               
+                const SizedBox(height: 20,),
+
+                const Text("Patient Details", style: TextStyle(color: ElabColors.greyColor, fontWeight: FontWeight.bold, fontSize: 16),),
+                const SizedBox(height: 10,),
+                Container(
+                  width: double.infinity,
+                  height: 1, // Adjust the height of the border line as needed
+                  decoration: BoxDecoration(
+                    color: ElabColors.greyColor2, // Color of the border line
+                    borderRadius: BorderRadius.circular(2), // Adjust the radius as needed
+                  ),
+                ),
+                const SizedBox(height: 20,),
+
+                 Text(testsMap['patientDetails']['name'], style: const TextStyle(
+                          fontWeight: FontWeight.bold, fontSize: 16,
+                        ),),
+                const SizedBox(height: 10,),
+                Text("Age : ${testsMap['patientDetails']['age']}  Gender: ${ testsMap['patientDetails']['gender']}", style: const TextStyle(
+                          fontWeight: FontWeight.bold, fontSize: 16,
+                      ),),
+
+                ]
+              ),
+            )
+        ]
+
+    );
+  }
+
   Material bottomNavBar() {
     return Material( 
       elevation: 8,
       child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-            Row(
-              children: [
-                Checkbox(
-                value: isChecked,
-                onChanged: (bool? value) {
-                  setState(() {
-                    isChecked = value ?? false;
-                  });
-                },
-          ),
-          Text('Pay Now',style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),)
-          ],
-            ),      
+        mainAxisAlignment: MainAxisAlignment.end,
+        children: [     
            
           Padding(
             padding: const EdgeInsets.fromLTRB(8,8,15,8),
             child: ElevatedButton(
               onPressed: () {
-                if (isChecked){
-                  payNow();
+                if(testsMap['identifier'] == 'prescription'){
+                  bookTest();
                 }
                 else{
-                  bookTest();
+                  showPaymentOptionsDialog(context);
                 }
               },
               style: ButtonStyle(
                 backgroundColor: const MaterialStatePropertyAll(ElabColors.primaryColor),
                 fixedSize: MaterialStateProperty.all(
-                  const Size(100, 40), 
+                  const Size(120, 40), 
                 ),
+                shape: MaterialStatePropertyAll(RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)))
                   ),
               child: Text('Book Test',style: TextStyle(fontFamily: GoogleFonts.poppins().fontFamily,
-              fontWeight: FontWeight.bold,)),
+              fontWeight: FontWeight.bold, color: Colors.white)),
             ),
           ),
         ],
@@ -393,4 +476,57 @@ class _ConfirmBookingState extends State<ConfirmBooking> {
       },
     );
   }
+
+
+  void showPaymentOptionsDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Payment Options'),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              ElevatedButton(
+                onPressed: () {
+                  payNow();
+                },
+                style: ButtonStyle(
+                backgroundColor: const MaterialStatePropertyAll(ElabColors.primaryColor),
+                fixedSize: MaterialStateProperty.all(
+                  const Size(150, 40), 
+                ),
+                shape: MaterialStatePropertyAll(RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)))
+                  ),
+                 child: const Text('Pay Now', style: TextStyle(color: Colors.white),),
+              ),
+              const SizedBox(height: 10,),
+              ElevatedButton(
+                onPressed: () {
+                  bookTest();
+                },
+                style: ButtonStyle(
+                backgroundColor: const MaterialStatePropertyAll(ElabColors.secondaryColor),
+                fixedSize: MaterialStateProperty.all(
+                  const Size(150, 40), 
+                ),
+                shape: MaterialStatePropertyAll(RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)))
+                  ),
+                 child: const Text('Pay Later', style: TextStyle(color: Colors.white),),
+              ),
+              TextButton(
+                onPressed: () {
+                  // Add your logic for "Cancel" button
+                  Navigator.pop(context, 'Cancel');
+                },
+                child: Text('Cancel'),
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
 }

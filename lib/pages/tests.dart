@@ -100,21 +100,21 @@ class _TestsState extends State<Tests> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(tests[index]['testname'], style:const TextStyle(
-                      fontWeight: FontWeight.bold, fontSize: 18
+                      fontWeight: FontWeight.bold, fontSize: 16
                     ),
                     ),
-                    const SizedBox(height: 10,),
+                    const SizedBox(height: 5,),
                     Row(
                       children: [
-                        const Icon(Icons.currency_rupee_sharp, color: Colors.black,),
+                        const Icon(Icons.currency_rupee_sharp, color: Colors.black,size: 16,),
                         Text(tests[index]['price'].toString(), style: const TextStyle(
-                          fontWeight: FontWeight.bold,color: Colors.green, fontSize: 18
+                          fontWeight: FontWeight.bold,color: Colors.green, fontSize: 16
                         ),)
                       ],
                     ),
-                    const SizedBox(height: 10,),
+                    const SizedBox(height: 5,),
                     Text('Requirements', style: TextStyle(color: ElabColors.greyColor,fontFamily: GoogleFonts.poppins().fontFamily, fontWeight: FontWeight.bold),),
-                    const SizedBox(height: 10,),
+                    const SizedBox(height: 5,),
                     Text(tests[index]['requirements'],)
                   ],
                 ),
@@ -161,8 +161,9 @@ class _TestsState extends State<Tests> {
             padding: const EdgeInsets.fromLTRB(8,8,15,8),
             child: ElevatedButton(
               onPressed: () {
-                Navigator.pushNamed(context, '/timeslot',
+                Navigator.pushNamed(context, '/patientdetails',
                 arguments: {
+                  'identifier' : 'test',
                   'tests':selectedItemsList, 
                   'price':price, 
                   'labId':labId,

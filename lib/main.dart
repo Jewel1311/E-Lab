@@ -8,7 +8,6 @@ import 'package:elab/pages/login.dart';
 import 'package:elab/pages/patientdetails.dart';
 import 'package:elab/pages/register.dart';
 import 'package:elab/pages/tests.dart';
-import 'package:elab/pages/timeslot.dart';
 import 'package:elab/pages/viewresults.dart';
 import 'package:elab/splashscreen.dart';
 import 'package:flutter/material.dart';
@@ -41,7 +40,6 @@ class Elab extends StatelessWidget {
         '/tests' :(context) => const Tests(),
         '/patientdetails' :(context) => const PatientDetails(),
         '/contactinfo' :(context) => const ContactInfo(),
-        '/timeslot':(context) => const TimeSlot(),
         '/confirmbooking' :(context) => const ConfirmBooking(),
         '/bookingdetails' :(context) => const BookingDetails(),
         '/viewresults' : (context) => const ViewResults(),
