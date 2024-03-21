@@ -212,8 +212,15 @@ class _LabDetailsState extends State<LabDetails> {
             ]),
 
         //Health Packages
-
-          Container(
+          InkWell(
+            onTap: (){
+              Navigator.pushNamed(context, '/health_packages',
+              arguments: {
+                'labId': labDetails['labId'],
+                'labName': labDetails['labName'],
+              });
+            },
+           child: Container(
               padding: EdgeInsets.fromLTRB(0, 5, 0, 5),
               width: double.infinity,
               margin: const EdgeInsets.all(10),
@@ -253,6 +260,7 @@ class _LabDetailsState extends State<LabDetails> {
                 ],
               )
             ),
+          ),
 
         //Ratings and Reviews
         isReviewing? 

@@ -2,12 +2,14 @@ import 'package:elab/pages/bookingdetails.dart';
 import 'package:elab/pages/confirmbooking.dart';
 import 'package:elab/pages/contactinfo.dart';
 import 'package:elab/pages/dashboard.dart';
+import 'package:elab/pages/health_packages.dart';
 import 'package:elab/pages/home.dart';
 import 'package:elab/pages/labdetails.dart';
 import 'package:elab/pages/login.dart';
 import 'package:elab/pages/patientdetails.dart';
 import 'package:elab/pages/register.dart';
 import 'package:elab/pages/tests.dart';
+import 'package:elab/pages/view_package.dart';
 import 'package:elab/pages/viewresults.dart';
 import 'package:elab/splashscreen.dart';
 import 'package:flutter/material.dart';
@@ -44,6 +46,8 @@ class Elab extends StatelessWidget {
         '/bookingdetails' :(context) => const BookingDetails(),
         '/viewresults' : (context) => const ViewResults(),
         '/labdetails':(context) => const LabDetails(),
+        '/health_packages':(context) => const HealthPackages(),
+        '/view_packages':(context) => const ViewPacakges(),
       },
     );
   }

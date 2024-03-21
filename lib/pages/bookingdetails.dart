@@ -154,7 +154,7 @@ class _BookingDetailsState extends State<BookingDetails> {
           : SingleChildScrollView(child: listBookingDetails()),
       bottomNavigationBar: isLoading
           ? null
-          : bookingStatus == 'pending' && bookingDetails[0]['pay_status'] =='pending'
+          : bookingStatus == 'pending'
               ? bottomNavBar()
               : null,
     );

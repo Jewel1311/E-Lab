@@ -61,7 +61,7 @@ class _PatientDetailsState extends State<PatientDetails> {
         );
     }else{
 
-      final Map patientDetials = {
+      final Map patientDetails = {
         'name': nameController.text,
         'age': ageController.text,
         'gender': selectedGender,
@@ -76,7 +76,18 @@ class _PatientDetailsState extends State<PatientDetails> {
           'identifier':testsMap['identifier'],
           'image':testsMap['image'],
           'labId':testsMap['labId'],
-          'patientDetails': patientDetials
+          'patientDetails': patientDetails
+        });
+      }
+      //if booking is health package
+      else if(testsMap['identifier'] == 'package'){
+        Navigator.pushNamed(context, '/contactinfo', arguments: {
+          'identifier':testsMap['identifier'],
+          'package_id':testsMap['package_id'],
+          'package_name':testsMap['package_name'],
+          'price':testsMap['price'],
+          'labId':testsMap['labId'],
+          'patientDetails': patientDetails
         });
       }
     //if booking done by selecting tests
@@ -86,7 +97,7 @@ class _PatientDetailsState extends State<PatientDetails> {
         'tests':testsMap['tests'],
         'price':testsMap['price'],
         'labId':testsMap['labId'],
-        'patientDetails': patientDetials
+        'patientDetails': patientDetails
       });
     }
       

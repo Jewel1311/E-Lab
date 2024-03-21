@@ -103,19 +103,55 @@ class _ConfirmBookingState extends State<ConfirmBooking> {
 
       final contactId = contact[0]['id'];
 
-      await supabase.from('booking').insert({
-        'tests': testsMap['tests'],
-        'date': formattedDate,
-        'patient_id' : patientId,
-        'contact_id': contactId,
-        'lab_id': testsMap['labId'],
-        'pay_status': payment,
-        'lab_name': labDetails[0]['labname'],
-        'time':'${now.hour}:${now.minute}:${now.second}'
-      });
+      if(testsMap['identifier'] == 'prescription'){
+          final prescription = await supabase.from('prescription').insert({
+          'date': formattedDate,
+          'patient_id' : patientId,
+          'contact_id': contactId,
+          'lab_id': testsMap['labId'],
+          'lab_name': labDetails[0]['labname'],
+          'user_id':supabase.auth.currentUser!.id,
+          'time':'${now.hour}:${now.minute}:${now.second}'
+        }).select();
+
+        await supabase.storage.from('prescription').upload(
+              "booking/${prescription[0]['id']}",
+              testsMap['image'],
+              fileOptions:
+                  const FileOptions(cacheControl: '3600', upsert: false),
+           );
+
+      }
+      else if(testsMap['identifier'] == 'package'){
+        await supabase.from('packages_booking').insert({
+          'date': formattedDate,
+          'patient_id' : patientId,
+          'contact_id': contactId,
+          'lab_id': testsMap['labId'],
+          'pay_status': payment,
+          'user_id':supabase.auth.currentUser!.id,
+          'lab_name': labDetails[0]['labname'],
+          'time':'${now.hour}:${now.minute}:${now.second}',
+          'price':testsMap['price'],
+          'package_id':testsMap['package_id']
+        });
+      }
+      else{
+        await supabase.from('booking').insert({
+          'tests': testsMap['tests'],
+          'date': formattedDate,
+          'patient_id' : patientId,
+          'contact_id': contactId,
+          'lab_id': testsMap['labId'],
+          'pay_status': payment,
+          'lab_name': labDetails[0]['labname'],
+          'time':'${now.hour}:${now.minute}:${now.second}',
+          'price':testsMap['price']
+        });
+      }
 
       Fluttertoast.showToast(
-          msg: "Test Booked",
+          msg: "Booking Successful",
           toastLength: Toast.LENGTH_LONG,
           gravity: ToastGravity.TOP,
           timeInSecForIosWeb: 2,
@@ -129,7 +165,7 @@ class _ConfirmBookingState extends State<ConfirmBooking> {
 
     } catch(e) {
        Fluttertoast.showToast(
-          msg: "Unable to book test",
+          msg: "Unable to book",
           toastLength: Toast.LENGTH_LONG,
           gravity: ToastGravity.TOP,
           timeInSecForIosWeb: 2,
@@ -160,7 +196,9 @@ class _ConfirmBookingState extends State<ConfirmBooking> {
                 if(testsMap['identifier'] == 'test')
                   listBookingDetails(),
                 if(testsMap['identifier'] == 'prescription')
-                  viewPrescription()
+                  viewPrescription(),
+                if(testsMap['identifier'] == 'package')
+                  packageBookingDetails()
                  
                ],
              ),
@@ -233,6 +271,117 @@ class _ConfirmBookingState extends State<ConfirmBooking> {
                     );
                   }
                 ),
+
+      
+                
+                const Text("Date and Time", style: TextStyle(color: ElabColors.greyColor, fontWeight: FontWeight.bold, fontSize: 16),),
+                const SizedBox(height: 10,),
+                 Container(
+                  width: double.infinity,
+                  height: 1, // Adjust the height of the border line as needed
+                  decoration: BoxDecoration(
+                    color: ElabColors.greyColor2, // Color of the border line
+                    borderRadius: BorderRadius.circular(2), // Adjust the radius as needed
+                  ),
+                ),
+                const SizedBox(height: 20,),
+                Text(displayDate +"  "+ convert24HourTo12Hour("${now.hour}:${now.minute}:${now.second}"), style: const TextStyle(
+                          fontWeight: FontWeight.bold, fontSize: 16,
+                        ),),
+               
+                const SizedBox(height: 20,),
+
+                const Text("Patient Details", style: TextStyle(color: ElabColors.greyColor, fontWeight: FontWeight.bold, fontSize: 16),),
+                const SizedBox(height: 10,),
+                Container(
+                  width: double.infinity,
+                  height: 1, // Adjust the height of the border line as needed
+                  decoration: BoxDecoration(
+                    color: ElabColors.greyColor2, // Color of the border line
+                    borderRadius: BorderRadius.circular(2), // Adjust the radius as needed
+                  ),
+                ),
+                const SizedBox(height: 20,),
+
+                 Text(testsMap['patientDetails']['name'], style: const TextStyle(
+                          fontWeight: FontWeight.bold, fontSize: 16,
+                        ),),
+                const SizedBox(height: 10,),
+                Text("Age : ${testsMap['patientDetails']['age']}  Gender: ${ testsMap['patientDetails']['gender']}", style: const TextStyle(
+                          fontWeight: FontWeight.bold, fontSize: 16,
+                      ),),
+
+                const SizedBox(height: 20,),
+                Container(
+                  width: double.infinity,
+                  height: 1, // Adjust the height of the border line as needed
+                  decoration: BoxDecoration(
+                    color: ElabColors.greyColor2, // Color of the border line
+                    borderRadius: BorderRadius.circular(2), // Adjust the radius as needed
+                  ),
+                ),
+                const SizedBox(height: 20,),
+                Row(
+                  children: [
+                    const Text("Total amount payable: ", style:  TextStyle(
+                              fontWeight: FontWeight.bold, fontSize: 16,
+                      ),),
+                      const Icon(Icons.currency_rupee),
+                    Text(testsMap['price'].toString(), style: const TextStyle(
+                              fontWeight: FontWeight.bold, fontSize: 18,color: Colors.green
+                      ),),
+                  ],
+                ),
+                ],
+              ),
+            ),
+        ]
+    );
+  }
+
+  Column packageBookingDetails() {
+      return Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+            Padding(
+              padding: const EdgeInsets.all(10.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+
+
+                  Text(labDetails[0]['labname'], style: const TextStyle(
+                    fontSize: 18, fontWeight: FontWeight.bold
+                    ),
+                  ),
+                  const SizedBox(height: 8,),
+                  Text(labDetails[0]['city'], style: const TextStyle(
+                    fontSize: 16,
+                    ),
+                  ),
+
+                const SizedBox(height: 15,),
+
+
+                
+                const SizedBox(height: 10,),
+                const Text("Package Selected", style: TextStyle(color: ElabColors.greyColor, fontWeight: FontWeight.bold, fontSize: 16),),
+                const SizedBox(height: 10,),
+                Text(testsMap['package_name'],style: const TextStyle(
+                    fontSize: 18,fontWeight: FontWeight.bold
+                    ),),
+                const SizedBox(height: 10,),
+
+                Container(
+                  width: double.infinity,
+                  height: 1, // Adjust the height of the border line as needed
+                  decoration: BoxDecoration(
+                    color: ElabColors.greyColor2, // Color of the border line
+                    borderRadius: BorderRadius.circular(2), // Adjust the radius as needed
+                  ),
+                ),
+                const SizedBox(height: 15,),
+
 
       
                 
@@ -491,6 +640,7 @@ class _ConfirmBookingState extends State<ConfirmBooking> {
               ElevatedButton(
                 onPressed: () {
                   payNow();
+                  Navigator.pop(context);
                 },
                 style: ButtonStyle(
                 backgroundColor: const MaterialStatePropertyAll(ElabColors.primaryColor),
@@ -505,6 +655,7 @@ class _ConfirmBookingState extends State<ConfirmBooking> {
               ElevatedButton(
                 onPressed: () {
                   bookTest();
+                  Navigator.pop(context);
                 },
                 style: ButtonStyle(
                 backgroundColor: const MaterialStatePropertyAll(ElabColors.secondaryColor),

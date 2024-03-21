@@ -98,6 +98,20 @@ class _ContactInfoState extends State<ContactInfo> {
           'contactDetails': contactDetails
         });
       }
+      //if booking is health package
+      else if(testsMap['identifier'] == 'package'){
+        Navigator.pushNamed(context, '/confirmbooking', arguments: {
+          'identifier':testsMap['identifier'],
+          'package_id':testsMap['package_id'],
+          'package_name':testsMap['package_name'],
+          'price':testsMap['price'],
+          'labId':testsMap['labId'],
+          'patientDetails': testsMap['patientDetails'],
+          'contactDetails': contactDetails
+
+
+        });
+      }
       else{
         Navigator.pushNamed(context, '/confirmbooking', arguments: {
         'identifier':testsMap['identifier'],
